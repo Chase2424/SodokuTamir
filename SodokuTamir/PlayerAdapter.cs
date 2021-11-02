@@ -15,6 +15,7 @@ namespace SodokuTamir
     {
         Android.Content.Context context;
         List<Player> objects;
+        //see if it works
         public PlayerAdapter(Android.Content.Context context, System.Collections.Generic.List<Player> objects)
         {
             this.context = context;
