@@ -46,7 +46,7 @@ namespace SodokuTamir
         }
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
-            LayoutInflater layoutInflater = ((MainActivity)context).LayoutInflater;
+            Android.Views.LayoutInflater layoutInflater = ((RecordActivity)context).LayoutInflater;
             Android.Views.View view = layoutInflater.Inflate(Resource.Layout.PlayerLayout, parent, false);
             TextView Name = view.FindViewById<TextView>(Resource.Id.name);
             TextView Time = view.FindViewById<TextView>(Resource.Id.time);

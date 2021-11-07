@@ -14,7 +14,7 @@ namespace SodokuTamir
     public class MainActivity : AppCompatActivity
     {
         PlayerAdapter adapter;
-        ListView lv;
+        
         public static List<Player> list = new List<Player>();
         Button btnStart, btnRecord;
         RadioButton Easy, Medium, Hard;
@@ -25,9 +25,7 @@ namespace SodokuTamir
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
-            list.Add(new Player("Guy1", 200,"4th july 2020"));
-            list.Add(new Player("Guy2", 20020, "4th july 2020"));
-            list.Add(new Player("Girl", 100, "4th july 2020"));
+            
             btnStart = (Button)FindViewById(Resource.Id.Start);
             btnRecord = (Button)FindViewById(Resource.Id.Record);
             Easy = (RadioButton)FindViewById(Resource.Id.Easy);

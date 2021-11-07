@@ -22,9 +22,12 @@ namespace SodokuTamir
             SetContentView(Resource.Layout.Recordlayout);
             // Create your application here
 
-            lv = (ListView)FindViewById(Resource.Id.Lview);
-            adapter = new PlayerAdapter(this, MainActivity.list);
-            lv.Adapter = adapter;
+            this.lv = (ListView)FindViewById(Resource.Id.Lview);
+            MainActivity.list.Add(new Player("Guy1", 200, "4th july 2020"));
+            MainActivity.list.Add(new Player("Guy2", 20020, "4th july 2020"));
+            MainActivity.list.Add(new Player("Girl", 100, "4th july 2020"));
+            this.adapter = new PlayerAdapter(this, MainActivity.list);
+            this.lv.Adapter = adapter;
         }
     }
 }
