@@ -15,7 +15,7 @@ namespace SodokuTamir
     {
         private string name;//Name of the player
         private int Time;//The time it took for the player to solve the sudoku
-        private String Date;//The Date the game took place in
+        private string Date;//The Date the game took place in
 
 
         public Player(string name, int Time, String Date)

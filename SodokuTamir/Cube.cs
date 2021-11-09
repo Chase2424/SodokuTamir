@@ -11,12 +11,12 @@ using System.Text;
 
 namespace SodokuTamir
 {
-    class Square
+    public abstract class Cube
     {
         
         protected int length;
         protected int width;
-        public Square(int length, int width)
+        public Cube(int length, int width)
         {
             this.length = length;
             this.width = width;

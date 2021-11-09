@@ -14,14 +14,14 @@ namespace SodokuTamir
     [Activity(Label = "Sodoku")]
     public class SodokuActivity : Activity
     {
-        SudokuCell[][]table;
+        SudokuCell[,]table;
         String input;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.SodokuLayout);
             // Create your application here
-            this.table = new SudokuCell[9][9];
+            this.table = new SudokuCell[9,9];
             SudokuCell[,] cells = new SudokuCell[9, 9];
             input = "2 9 ? 7 4 3 8 6 1"+
                     "4 7 1 8 6 5 9 ? 7"+
@@ -32,13 +32,13 @@ namespace SodokuTamir
                     "? ? 3 5 2 4 1 8 9"+
                     "9 2 8 6 7 1 ? 5 4"+
                     "1 5 4 9 3 ? 6 7 2";
-            String [] split = input.split(regex:" ");
+            //String [] split = input.split(regex:" ");
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                  String s =split[i*9+j];
-                  table[i, j] = new SudokuCell();
+                  //String s =split[i*9+j];
+                //  table[i, j] = new SudokuCell();
                   
                 }
             }
