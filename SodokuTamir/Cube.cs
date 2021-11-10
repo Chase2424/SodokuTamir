@@ -11,7 +11,7 @@ using System.Text;
 
 namespace SodokuTamir
 {
-    public abstract class Cube
+    public class Cube
     {
         
         protected int length;

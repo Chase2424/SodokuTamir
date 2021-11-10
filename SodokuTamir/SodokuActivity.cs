@@ -14,15 +14,17 @@ namespace SodokuTamir
     [Activity(Label = "Sodoku")]
     public class SodokuActivity : Activity
     {
-        SudokuCell[,]table;
+        SudokuCell[,] cells;
+        RelativeLayout board;
         String input;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.SodokuLayout);
             // Create your application here
-            this.table = new SudokuCell[9,9];
-            SudokuCell[,] cells = new SudokuCell[9, 9];
+            this.board = (RelativeLayout)FindViewById(Resource.Id.Board);
+            this.cells = new SudokuCell[9,9];
+            
             input = "2 9 ? 7 4 3 8 6 1"+
                     "4 7 1 8 6 5 9 ? 7"+
                     "8 7 6 1 9 2 5 4 3"+
@@ -33,13 +35,17 @@ namespace SodokuTamir
                     "9 2 8 6 7 1 ? 5 4"+
                     "1 5 4 9 3 ? 6 7 2";
             //String [] split = input.split(regex:" ");
+            int ButtonHeight=100,ButtonWidth = 100;
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                  //String s =split[i*9+j];
-                //  table[i, j] = new SudokuCell();
-                  
+                    this.cells[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight, i, ButtonHeight, ButtonWidth, this);
+                    board.AddView(this.cells[i, j].getButton());
+                    
+                    //String s =split[i*9+j];
+                    //  table[i, j] = new SudokuCell();
+
                 }
             }
         }

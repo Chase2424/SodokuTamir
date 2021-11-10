@@ -16,15 +16,23 @@ namespace SodokuTamir
         private int x, y;
         private bool Fixed = false;
         private int Value;
-        private Button btn;
+        private Button btn ;
         private Context context;
 
-        public SudokuCell(int x, int y, string Fixed,int Value, Context context):base(length,width)
+        public SudokuCell(int x, int y, int Value,int length,int width, Context context) : base(length, width)
         {
             this.x = x;
+            this.btn = new Button(context);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, length);
+
+            layoutParams.SetMargins(x+width,y+length,0,0);
+            this.btn.LayoutParameters = layoutParams;
+            
+            
             this.y = y;
             this.context = context;
             this.Value = Value;
+            //this.btn.Width = this.x + this.width;
             if (this.Value != 0)
             {
                 this.Fixed = true;
@@ -33,12 +41,12 @@ namespace SodokuTamir
             {
                 this.Fixed = false;
             }
-      
-            if (this.Fixed == false)
-            {
+            
+           // if (this.Fixed == false)
+            //{
 
-                this.btn.SetText(this.Value);
-            }
+             //   this.btn.SetText(this.Value);
+           // }
             this.btn.Click += Btn_Click;
 
 
@@ -46,8 +54,11 @@ namespace SodokuTamir
        
 
         
-    }
-
+        }
+        public Button getButton()
+        {
+            return this.btn;
+        }
         private void Btn_Click(object sender, EventArgs e)
         {
            if (Fixed)
