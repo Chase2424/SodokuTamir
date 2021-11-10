@@ -25,7 +25,7 @@ namespace SodokuTamir
             this.btn = new Button(context);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, length);
 
-            layoutParams.SetMargins(x+width,y+length,0,0);
+            layoutParams.SetMargins(x+width-120,y+length-100,0,0);
             this.btn.LayoutParameters = layoutParams;
             
             

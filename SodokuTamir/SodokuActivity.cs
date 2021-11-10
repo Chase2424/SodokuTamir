@@ -35,7 +35,7 @@ namespace SodokuTamir
                     "9 2 8 6 7 1 ? 5 4"+
                     "1 5 4 9 3 ? 6 7 2";
             //String [] split = input.split(regex:" ");
-            int ButtonHeight=100,ButtonWidth = 100;
+            int ButtonHeight=120,ButtonWidth = 120;
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)

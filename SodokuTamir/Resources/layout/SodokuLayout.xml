@@ -2,12 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#77B5C4">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="900px"
+        android:layout_height="1200px"
         android:id="@+id/Board"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
         </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,6 +30,6 @@
             android:layout_width="0px"
             android:layout_height="match_parent"
             android:layout_weight="1"
-        android:background="@drawable/pencail"/>
+        android:background="@drawable/pencil"/>
         </LinearLayout>
 </LinearLayout>
