@@ -13,6 +13,7 @@ namespace SodokuTamir
 {
     public class SudokuCell : Cube
     {
+        private int[] remaining;
         private int x, y;
         private bool Fixed = false;
         private int Value;
@@ -21,6 +22,12 @@ namespace SodokuTamir
 
         public SudokuCell(int x, int y, int Value, int length, int width, Context context) : base(length, width)
         {
+            remaining = new int[9];
+            for (int i = 1; i < 10; i++)
+            {
+                remaining[i] = i;
+            }
+
             this.x = x;
             this.btn = new Button(context);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, length);
@@ -55,6 +62,7 @@ namespace SodokuTamir
 
 
         }
+
         public void setValue(int value)
         {
             this.Value = value;

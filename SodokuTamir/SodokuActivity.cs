@@ -59,16 +59,20 @@ namespace SodokuTamir
         }
         public void RandomizeBoard()
         {
+            int counter = 0;
             int number = 0;
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-
+                    number = RandomNumber();
+                    counter = 0;
                     do
                     {
                         number = RandomNumber();
-                    } while (IsValueTaken(i, j, number));
+                        counter++;
+                    } while (IsValueTaken(i, j, number)&&counter!=10);
+                    
                     this.cells[i, j].setValue(number);
                     this.cells[i, j].getButton().Text = ""+number;
                 }
