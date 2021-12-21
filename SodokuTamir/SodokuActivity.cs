@@ -43,7 +43,7 @@ namespace SodokuTamir
                     this.cells[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight, 0, ButtonHeight, ButtonWidth, this);
 
                     board.AddView(this.cells[i, j].getButton());
-
+                    //
                     //String s =split[i*9+j];
                     //  table[i, j] = new SudokuCell();
 
