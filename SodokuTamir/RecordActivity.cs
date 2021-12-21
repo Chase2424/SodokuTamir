@@ -28,6 +28,12 @@ namespace SodokuTamir
             MainActivity.list.Add(new Player("Girl", 100, "4th july 2020"));
             this.adapter = new PlayerAdapter(this, MainActivity.list);
             this.lv.Adapter = adapter;
+            lv.ItemClick += Lv_ItemClick;
+        }
+
+        private void Lv_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
+        {
+            
         }
     }
 }

@@ -23,7 +23,7 @@ namespace SodokuTamir
         public SudokuCell(int x, int y, int Value, int length, int width, Context context) : base(length, width)
         {
             remaining = new int[9];
-            for (int i = 1; i < 10; i++)
+            for (int i = 0; i < 9; i++)
             {
                 remaining[i] = i;
             }
