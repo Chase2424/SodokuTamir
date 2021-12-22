@@ -16,6 +16,8 @@ namespace SodokuTamir
     {
         SudokuCell[,] cells;
         RelativeLayout board;
+        private bool mExternalStorageAvailable;
+        private bool mExternalStorageWriteable;
         String input;
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -24,20 +26,11 @@ namespace SodokuTamir
             // Create your application here
             this.board = (RelativeLayout)FindViewById(Resource.Id.Board);
             this.cells = new SudokuCell[9, 9];
-            input = "2 9 ? 7 4 3 8 6 1" +
-                    "4 7 1 8 6 5 9 ? 7" +
-                    "8 7 6 1 9 2 5 4 3" +
-                    "3 8 7 4 5 9 2 1 6" +
-                    "6 1 2 3 ? 7 4 7 5" +
-                    "? 4 9 2 ? 6 7 3 8" +
-                    "? ? 3 5 2 4 1 8 9" +
-                    "9 2 8 6 7 1 ? 5 4" +
-                    "1 5 4 9 3 ? 6 7 2";
-            //String [] split = input.split(regex:" ");
+
             int ButtonHeight = 120, ButtonWidth = 120;
             for (int i = 0; i < 9; i++)
             {
-                
+
                 for (int j = 0; j < 9; j++)
                 {
                     this.cells[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight, 0, ButtonHeight, ButtonWidth, this);
@@ -77,21 +70,17 @@ namespace SodokuTamir
                     {
                         count++;
                         number = pos[RandomNumber(pos.Count)];
-                        if(Screwed())
-                        {
-                            RandomizeBoard();
-                            return;
-                        }
 
-                    } 
+
+                    }
                     pos.RemoveAt(pos.IndexOf(number));
                     this.cells[i, j].setValue(number);
                     check[i, j] = number;
                     this.cells[i, j].getButton().Text = "" + number;
                 }
-                Console.WriteLine("Number:::::"+i);
+                Console.WriteLine("Number:::::" + i);
             }
-            
+
         }
         public List<int> restateList()
         {
@@ -143,11 +132,11 @@ namespace SodokuTamir
             {
                 squareY = 2;
             }
-            for(int i = squareX; i<squareX+3;i++)
+            for (int i = squareX; i < squareX + 3; i++)
             {
-                for(int j= squareY; j<squareY+3;j++)
+                for (int j = squareY; j < squareY + 3; j++)
                 {
-                    if(this.cells[i,j].getValue() == number)
+                    if (this.cells[i, j].getValue() == number)
                     {
                         return true;
                     }
@@ -155,5 +144,30 @@ namespace SodokuTamir
             }
             return false;
         }
+        public void setPermissions()
+        {
+            string state = Android.OS.Environment.ExternalStorageState;
+            if (Android.OS.Environment.MediaMounted.Equals(state))
+            {
+                //we can read and write the media
+                mExternalStorageAvailable = mExternalStorageWriteable = true;
+                Toast.MakeText(this, "we can read and write the media", ToastLength.Long).Show();
+            }
+            else if (Android.OS.Environment.MediaMountedReadOnly.Equals(state))
+            {
+                //we can only read the media
+                mExternalStorageAvailable = true;
+                mExternalStorageWriteable = false;
+                Toast.MakeText(this, "we can only read the media", ToastLength.Long).Show();
+
+            }
+            else
+            {
+                //something else is wrong. we can neither rad nor write
+                mExternalStorageAvailable = mExternalStorageWriteable = false;
+                Toast.MakeText(this, "something else is wrong. we can neither read nor write", ToastLength.Long).Show();
+            }
+        }
     }
+
 }

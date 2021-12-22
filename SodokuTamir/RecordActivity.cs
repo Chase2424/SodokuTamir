@@ -33,7 +33,10 @@ namespace SodokuTamir
 
         private void Lv_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
-            
+            Intent i = new Intent(this, typeof(DisplayRecord));
+            int pos = e.Position;
+            i.PutExtra("Position", pos);
+            StartActivity(i);
         }
     }
 }

@@ -4,5 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-
+     <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="1200px"
+        android:id="@+id/Board1"
+        android:orientation="vertical"
+        >
+        </RelativeLayout>
 </LinearLayout>
