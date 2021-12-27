@@ -66,6 +66,7 @@ namespace SodokuTamir
         public void setValue(int value)
         {
             this.Value = value;
+            this.btn.Text = ""+value;
         }
         public int getValue()
         {

@@ -14,8 +14,11 @@ namespace SodokuTamir
     [Activity(Label = "Sodoku")]
     public class SodokuActivity : Activity
     {
-        SudokuCell[,] cells;
-        RelativeLayout board;
+        static SudokuCell[,] cells;
+        static RelativeLayout L1;
+        static List<int[,]> Solutions;
+        static int result_num = 0;
+        static bool finishedGenerating = false;
         private bool mExternalStorageAvailable;
         private bool mExternalStorageWriteable;
         String input;
@@ -24,126 +27,267 @@ namespace SodokuTamir
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.SodokuLayout);
             // Create your application here
-            this.board = (RelativeLayout)FindViewById(Resource.Id.Board);
-            this.cells = new SudokuCell[9, 9];
-
+            L1 = (RelativeLayout)FindViewById(Resource.Id.Board);
+            cells = new SudokuCell[9, 9];
             int ButtonHeight = 120, ButtonWidth = 120;
+            setPermissions();
             for (int i = 0; i < 9; i++)
             {
 
                 for (int j = 0; j < 9; j++)
                 {
-                    this.cells[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight, 0, ButtonHeight, ButtonWidth, this);
+                    cells[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight, 0, ButtonHeight, ButtonWidth, this);
 
-                    board.AddView(this.cells[i, j].getButton());
-                    //
-                    //String s =split[i*9+j];
-                    //  table[i, j] = new SudokuCell();
+
+
 
                 }
             }
-            RandomizeBoard();
+            Console.WriteLine("Hello World!");
+            Solutions = new List<int[,]>();
+            int[,] board = new int[9, 9];
+            //מקרה 1
+            //int[] allow_to_use1 = new int[9] {1,2,3,4,5,6,7,8,9 };
+            //generate_array(board, 0, 0, allow_to_use1);
+
+            //מקרה 2 שיש ערך של 2 במקום 0,0
+            //int[] allow_to_use1 = new int[8] { 1, 3, 4, 5, 6, 7, 8, 9 };
+            int[] allow_to_use1 = new int[9] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            int rndNum = RandomNumber(allow_to_use1.Length);
+            board[0, 0] = allow_to_use1[rndNum];
+            generate_array(board, 1, 0, allow_to_use1);
+
+
+            //  print_arr(board,0,0);
+
+            
+
+
         }
-        public int RandomNumber(int end)
+        public static void ShowBoard()
+        {
+            for (int i = 0; i < 9; i++)
+            {
+
+                for (int j = 0; j < 9; j++)
+                {
+                    L1.AddView(cells[i, j].getButton());
+                }
+            }
+        }
+        public static int RandomNumber(int end)
         {
             Random rnd = new Random();
             int number = rnd.Next(0, end);
             return number;
         }
-        public void RandomizeBoard()
+        static bool generate_array(int[,] arr1, int x, int y, int[] allow_to_use1)
         {
+           
+            //הפונקציה לא עבדה כאשר עבדנו על אוותו מערך בלי לשכפל אותו
+            int[,] arr = arr1.Clone() as int[,];
 
-            int number = 0;
-            List<int> pos = new List<int>();
-            pos = restateList();
-            int[,] check = new int[9, 9];
-            int count;
-            for (int i = 0; i < 9; i++)
+            // אם לא תשמש ב סינון של מה שכבר השתמשת, יקח פי עמה זמן לפונקציה 
+            int[] allow_to_use = allow_to_use1.Clone() as int[];
+            //שהמספר יבחר מהמערך באופן רנדומלי
+            int rndNum;
+            rndNum = RandomNumber(allow_to_use.Length);
+
+            //  print_arr(arr, x, y);
+            bool next = false;
+            for (int i = 0; i < allow_to_use.Length; i++)
             {
-                count = 0;
-                pos = restateList();
-                for (int j = 0; j < 9; j++)
+                rndNum = RandomNumber(allow_to_use.Length);
+                int current_number = allow_to_use[rndNum];
+                next = false;
+                // אם המספר קיים בשורה, תעבור למספר הבא
+                for (int x1 = 0; x1 < x; x1++)
                 {
-                    number = pos[RandomNumber(pos.Count)];
-
-                    while (IsValueTaken(i, j, number))
+                    if (arr[x1, y] == current_number)
                     {
-                        count++;
-                        number = pos[RandomNumber(pos.Count)];
-
-
-                    }
-                    pos.RemoveAt(pos.IndexOf(number));
-                    this.cells[i, j].setValue(number);
-                    check[i, j] = number;
-                    this.cells[i, j].getButton().Text = "" + number;
-                }
-                Console.WriteLine("Number:::::" + i);
-            }
-
-        }
-        public List<int> restateList()
-        {
-            List<int> pos = new List<int>();
-            for (int i = 1; i < 10; i++)
-            {
-                pos.Add(i);
-            }
-            return pos;
-        }
-        public Boolean IsValueTaken(int x, int y, int number)
-        {
-            int squareX, squareY;
-            for (int i = 0; i < 9; i++)
-            {
-                if (this.cells[i, y].getValue() == number)
-                {
-                    return true;
-                }
-                if (this.cells[x, i].getValue() == number)
-                {
-                    return true;
-                }
-            }
-            if (x < 3)
-            {
-                squareX = 1;
-            }
-            else if (x > 5)
-            {
-                squareX = 3;
-            }
-            else
-            {
-                squareX = 2;
-
-
-
-            }
-            if (y < 3)
-            {
-                squareY = 1;
-            }
-            else if (y > 5)
-            {
-                squareY = 3;
-            }
-            else
-            {
-                squareY = 2;
-            }
-            for (int i = squareX; i < squareX + 3; i++)
-            {
-                for (int j = squareY; j < squareY + 3; j++)
-                {
-                    if (this.cells[i, j].getValue() == number)
-                    {
-                        return true;
+                        next = true;
+                        break;
                     }
                 }
+                if (next)
+                {
+                    //Remove number from Arr
+                    allow_to_use = allow_to_use.Where(val => val != current_number).ToArray();
+                    continue;
+                }
+                /*
+                for (int y1 = 0; y1 < y; y1++)
+                {
+                    if (arr[x, y1] == current_number)
+                    {
+                        next = true;
+                        break;
+                    }
+                }
+
+                if (next)
+                {
+                    
+                    continue;
+                }*/
+
+
+                // אם הגענו לפה, המספר בסדר
+                arr[x, y] = current_number;
+
+                if (checkBoard(arr))
+                {
+
+                    if (x == 8)
+                    {
+                        if (y == 8)
+                        {
+                            //הגענו לסוף הלוח, הצלחה אמיתית GREAT SUCCESS
+                            print_arr(arr, x, y);
+                            for (int k = 0; k < 9; k++)
+                            {
+                                for (int j = 0; j < 9; j++)
+                                {
+                                    cells[k, j].setValue(arr[k, j]);
+
+                                }
+                            }
+                            finishedGenerating = true;
+                            ShowBoard();
+                           return true;
+
+                        }
+                        x = 0;
+                        y++;
+                        // אם שורה חדשה, תן לו אפוציה לכל המספרים
+                        allow_to_use = new int[9] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+                    }
+                    else
+                    {
+                        x++;
+                    }
+                    if(!finishedGenerating)
+                         generate_array(arr, x, y, allow_to_use);
+                }
+
             }
-            return false;
+
+
+            return true;
         }
+
+        
+        static bool checkBoard(int[,] arr)
+        {
+            // הסתמש במיון דליים בכדי לספור מופעים של כל ספרה בכל ציר
+            int[] _bucket = new int[10];
+            //[0,0,0,0,0,0,0]
+            //    1-9 מטםיע יותר מפעם אחת
+            //בדוק את השורות
+            for (int y = 0; y < 9; y++)
+            {
+                for (int x = 0; x < 9; x++)
+                {
+                    if (arr[x, y] == 0)
+                        continue;
+                    if (_bucket[arr[x, y]] > 0)
+                        return false;
+
+                    _bucket[arr[x, y]]++;
+                }
+
+                _bucket = new int[10];
+            }
+
+
+            //check all y
+            for (int x = 0; x < 9; x++)
+
+            {
+                for (int y = 0; y < 9; y++)
+                {
+                    if (arr[x, y] == 0)
+                        continue;
+                    if (_bucket[arr[x, y]] > 0)
+                        return false;
+
+                    _bucket[arr[x, y]]++;
+                }
+
+                _bucket = new int[10];
+            }
+
+
+            //Check sub-array
+
+            if (
+               // היה קושי לחלק את המערך לבדיקות לפי אזורים בלי לכתוב פונקציית עזר
+               check_sub_arr(arr, 0, 0) &&
+               check_sub_arr(arr, 3, 0) &&
+               check_sub_arr(arr, 6, 0) &&
+
+               check_sub_arr(arr, 0, 3) &&
+               check_sub_arr(arr, 3, 3) &&
+               check_sub_arr(arr, 6, 3) &&
+
+               check_sub_arr(arr, 0, 6) &&
+               check_sub_arr(arr, 3, 6) &&
+               check_sub_arr(arr, 6, 6)
+               )
+                return true;
+
+            else
+                return false;
+        }
+
+
+        static bool check_sub_arr(int[,] arr, int start_pos_x, int start_pos_y)
+        {
+
+            int[] _bucket = new int[10];
+
+
+            for (int y = start_pos_y; y < start_pos_y + 3; y++)
+            {
+                for (int x = start_pos_x; x < start_pos_x + 3; x++)
+                {
+                    if (arr[x, y] == 0)
+                        continue;
+                    if (_bucket[arr[x, y]] > 0)
+                        return false;
+
+                    _bucket[arr[x, y]]++;
+                }
+
+
+            }
+
+
+            return true;
+
+        }
+
+        // הדפס את הלוח 
+        static void print_arr(int[,] arr, int pos_x, int pos_y)
+        {
+            int[,] arr1 = arr.Clone() as int[,];
+            result_num++;
+            Console.WriteLine("*****************************\n");
+            Console.WriteLine("result_num:" + result_num + " x:" + pos_x + " ,y:" + pos_y);
+            for (int y = 0; y < 9; y++)
+            {
+                for (int x = 0; x < 9; x++)
+                {
+                    Console.Write(arr1[x, y] + " ");
+                }
+                Console.WriteLine("\n");
+            }
+        }
+    
+
+
+       
+        
         public void setPermissions()
         {
             string state = Android.OS.Environment.ExternalStorageState;
@@ -169,5 +313,4 @@ namespace SodokuTamir
             }
         }
     }
-
 }
