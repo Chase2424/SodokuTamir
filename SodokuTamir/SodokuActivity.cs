@@ -6,6 +6,7 @@ using Android.Views;
 using Android.Widget;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -14,6 +15,8 @@ namespace SodokuTamir
     [Activity(Label = "Sodoku")]
     public class SodokuActivity : Activity
     {
+        static ISharedPreferences sp;
+
         static SudokuCell[,] cells;
         static RelativeLayout L1;
         static List<int[,]> Solutions;
@@ -77,7 +80,35 @@ namespace SodokuTamir
             }
             return Str;
         }
+        public static void SaveBoard()
+        {
+            string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
+            Java.IO.File myDir = new Java.IO.File(root + "/saved_sodokus");
+            var editor = sp.Edit();
+            editor.PutInt("Number", sp.GetInt("Number", 0) + 1);
+            String Sname = "Image-" + sp.GetInt("number", 0) + ".text";
+            editor.Commit();
+            Java.IO.File file = new Java.IO.File(myDir, Sname);
+            if (file.Exists())
+                file.Delete();
+            try
+            {
+                string path = System.IO.Path.Combine(myDir.AbsolutePath, Sname);
+                FileStream fs = new FileStream(path, FileMode.Create);
+                if (fs != null)
+                {
+                    
+                }
+                fs.Flush();
+                fs.Close();
+            }
+            catch (Exception e)
+            {
+               
+            }
         
+
+    }
         public static void ShowBoard()
         {
             for (int i = 0; i < 9; i++)
@@ -166,6 +197,7 @@ namespace SodokuTamir
 
                                 }
                             }
+                            L1.RemoveAllViewsInLayout();
                             finishedGenerating = true;
                             ShowBoard();
                            return true;
