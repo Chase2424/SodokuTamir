@@ -31,6 +31,18 @@ namespace SodokuTamir
             int j = Intent.GetIntExtra("Position", 0);
 
         }
+        public SudokuCell[,] StringToBoard(string str)
+        {
+            SudokuCell[,] arr = new SudokuCell[9,9];
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    arr[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight, str[i * j], ButtonHeight, ButtonWidth, this);
+                }
+            }
+            return arr;
+        }
         public void BuildBoard()
         {
             try

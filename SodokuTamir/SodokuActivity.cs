@@ -60,10 +60,24 @@ namespace SodokuTamir
 
             //  print_arr(board,0,0);
 
-            
+
 
 
         }
+        //פונקציה המעבירה את ערכי הלוח למחרוזת אחת
+        public static string BoardToString(SudokuCell[,]arr)
+        {
+            string Str="";
+            for(int i =0;i<9;i++)
+            {
+                for(int j=0;j<9;j++)
+                {
+                    Str = Str + arr[i, j].getValue();
+                }
+            }
+            return Str;
+        }
+        
         public static void ShowBoard()
         {
             for (int i = 0; i < 9; i++)
