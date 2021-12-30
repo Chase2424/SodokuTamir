@@ -1,22 +1,26 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.OS;
+using Android.Preferences;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Java.IO;
+using System;
 
 namespace SodokuTamir
 {
     [Activity(Label = "Sodoku")]
     public class SodokuActivity : Activity
     {
-        static ISharedPreferences sp;
-
+        static SodokuActivity _singleTone;
+        
+        //ISharedPreferences sp;
+        static int difficulty; 
         static SudokuCell[,] cells;
         static RelativeLayout L1;
         static List<int[,]> Solutions;
@@ -28,12 +32,14 @@ namespace SodokuTamir
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            _singleTone = this;
             SetContentView(Resource.Layout.SodokuLayout);
             // Create your application here
             L1 = (RelativeLayout)FindViewById(Resource.Id.Board);
             cells = new SudokuCell[9, 9];
             int ButtonHeight = 120, ButtonWidth = 120;
             setPermissions();
+
             for (int i = 0; i < 9; i++)
             {
 
@@ -46,7 +52,7 @@ namespace SodokuTamir
 
                 }
             }
-            Console.WriteLine("Hello World!");
+            //Console.WriteLine("Hello World!");
             Solutions = new List<int[,]>();
             int[,] board = new int[9, 9];
             //מקרה 1
@@ -80,35 +86,40 @@ namespace SodokuTamir
             }
             return Str;
         }
-        public static void SaveBoard()
+        public  void SaveBoard()
         {
-            string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
-            Java.IO.File myDir = new Java.IO.File(root + "/saved_sodokus");
+
+            
+            Context context = this;
+            ISharedPreferences sp = PreferenceManager.GetDefaultSharedPreferences(context);
+
             var editor = sp.Edit();
+            
             editor.PutInt("Number", sp.GetInt("Number", 0) + 1);
-            String Sname = "Image-" + sp.GetInt("number", 0) + ".text";
+            String Sname = "Sodoku-" + sp.GetInt("Number", 0) + ".txt";
             editor.Commit();
+            string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
+            string game_folder = root + "/saved_sodokus";
+            Java.IO.File myDir = new Java.IO.File(game_folder);
+
+            
             Java.IO.File file = new Java.IO.File(myDir, Sname);
             if (file.Exists())
                 file.Delete();
-            try
-            {
-                string path = System.IO.Path.Combine(myDir.AbsolutePath, Sname);
-                FileStream fs = new FileStream(path, FileMode.Create);
-                if (fs != null)
-                {
-                    
-                }
-                fs.Flush();
-                fs.Close();
-            }
-            catch (Exception e)
-            {
-               
-            }
-        
+            
+            myDir.Mkdir(); 
+            string filename = Path.Combine(game_folder, Sname);
+            FileStream fs = new FileStream(filename, FileMode.Create);
+            byte[] bytes = Encoding.UTF8.GetBytes(BoardToString(cells));
 
-    }
+            fs.Write(bytes, 0, bytes.Length);
+            fs.Flush();
+            
+
+
+
+        }
+
         public static void ShowBoard()
         {
             for (int i = 0; i < 9; i++)
@@ -126,7 +137,8 @@ namespace SodokuTamir
             int number = rnd.Next(0, end);
             return number;
         }
-        static bool generate_array(int[,] arr1, int x, int y, int[] allow_to_use1)
+        
+        public static bool generate_array(int[,] arr1, int x, int y, int[] allow_to_use1)
         {
            
             //הפונקציה לא עבדה כאשר עבדנו על אוותו מערך בלי לשכפל אותו
@@ -193,13 +205,19 @@ namespace SodokuTamir
                             {
                                 for (int j = 0; j < 9; j++)
                                 {
-                                    cells[k, j].setValue(arr[k, j]);
-
+                                   cells[k, j].setValue(arr[k, j]);
+                                    
                                 }
                             }
-                            L1.RemoveAllViewsInLayout();
+                            _singleTone.SaveBoard();
+
+                            //L1.RemoveAllViewsInLayout();
+
                             finishedGenerating = true;
                             ShowBoard();
+
+
+                            //_singleTone.on_board_ready(arr);
                            return true;
 
                         }
@@ -223,7 +241,7 @@ namespace SodokuTamir
         }
 
         
-        static bool checkBoard(int[,] arr)
+        public static bool checkBoard(int[,] arr)
         {
             // הסתמש במיון דליים בכדי לספור מופעים של כל ספרה בכל ציר
             int[] _bucket = new int[10];
@@ -287,7 +305,7 @@ namespace SodokuTamir
         }
 
 
-        static bool check_sub_arr(int[,] arr, int start_pos_x, int start_pos_y)
+        public static bool check_sub_arr(int[,] arr, int start_pos_x, int start_pos_y)
         {
 
             int[] _bucket = new int[10];
@@ -314,26 +332,36 @@ namespace SodokuTamir
         }
 
         // הדפס את הלוח 
-        static void print_arr(int[,] arr, int pos_x, int pos_y)
+        public static void print_arr(int[,] arr, int pos_x, int pos_y)
         {
             int[,] arr1 = arr.Clone() as int[,];
             result_num++;
-            Console.WriteLine("*****************************\n");
-            Console.WriteLine("result_num:" + result_num + " x:" + pos_x + " ,y:" + pos_y);
+            System.Console.WriteLine("*****************************\n");
+            System.Console.WriteLine("result_num:" + result_num + " x:" + pos_x + " ,y:" + pos_y);
             for (int y = 0; y < 9; y++)
             {
                 for (int x = 0; x < 9; x++)
                 {
-                    Console.Write(arr1[x, y] + " ");
+                    //Console.Write(arr1[x, y] + " ");
                 }
-                Console.WriteLine("\n");
+                System.Console.WriteLine("\n");
             }
         }
     
 
+        public void AdjustBoard()
+        {
+          //  var editor = sp.Edit();
+           // difficulty = sp.GetInt("Difficulty", 0);
+         //   editor.Commit();
+            
+            if(difficulty==1)
+            {
 
-       
-        
+            }
+        }
+
+
         public void setPermissions()
         {
             string state = Android.OS.Environment.ExternalStorageState;

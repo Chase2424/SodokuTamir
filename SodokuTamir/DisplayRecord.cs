@@ -6,6 +6,7 @@ using Android.Views;
 using Android.Widget;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -30,26 +31,27 @@ namespace SodokuTamir
             
             BuildBoard();
         }
-        public void getAllFile()
+        public void getSpecificFile(int num)
         {
             //Java.IO.File path = Environment.GetExternalFilesDir(System.Environment.DirectoryPictures);
             //Java.IO.File myDir = new Java.IO.File(path, "/saved_images");
             string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
 
             Java.IO.File myDir = new Java.IO.File(root + "/saved_sodokus");
-            if (myDir.IsDirectory)
+            
+
+            var fileName = @"suduku-"+num;
+            using FileStream fs = File.OpenRead(fileName);
+            byte[] buf = new byte[1024];
+            int c;
+            string sodoku_text="";
+            while ((c = fs.Read(buf, 0, buf.Length)) > 0)
             {
-                String[] dirList = myDir.List();
-                for (int i = 0; i < dirList.Length; i++)
-                {
-                    Java.IO.File file = new Java.IO.File(myDir, dirList[i]);
-                   
-
-
-                }
+                sodoku_text+=(Encoding.UTF8.GetString(buf, 0, c));
             }
+
         }
-                public void DefineCurrentArray()
+        public void DefineCurrentArray()
         {
             int j = Intent.GetIntExtra("Position", 0);
 
@@ -68,7 +70,7 @@ namespace SodokuTamir
         }
         public void BuildBoard()
         {
-            getAllFile();
+            
             try
             {
 
