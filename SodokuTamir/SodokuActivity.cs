@@ -18,38 +18,49 @@ namespace SodokuTamir
     public class SodokuActivity : Activity
     {
         static SodokuActivity _singleTone;
-        
+        Button Eraser;
+        Button Pen;
+            Button Pencil;
         //ISharedPreferences sp;
-        static int difficulty; 
+         static int difficulty; 
         static SudokuCell[,] cells;
-        static RelativeLayout L1;
+         static RelativeLayout L1;
+        static int ButtonHeight = 120, ButtonWidth = 120;
+        static SudokuCell[,] GuessCells;
         static List<int[,]> Solutions;
         static int result_num = 0;
+        ISharedPreferences shared;
+        static int guess;
         static bool finishedGenerating = false;
+        public static EditText et;
         private bool mExternalStorageAvailable;
         private bool mExternalStorageWriteable;
         String input;
+        
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             _singleTone = this;
+            
             SetContentView(Resource.Layout.SodokuLayout);
             // Create your application here
+            et = (EditText)FindViewById(Resource.Id.EditText);
+            //et.Text="";
             L1 = (RelativeLayout)FindViewById(Resource.Id.Board);
+            
             cells = new SudokuCell[9, 9];
-            int ButtonHeight = 120, ButtonWidth = 120;
+            Eraser = (Button)FindViewById(Resource.Id.Eraser);
+            Pen = (Button)FindViewById(Resource.Id.Pen);
+            Pencil = (Button)FindViewById(Resource.Id.Pencil);
+            
             setPermissions();
-
+            L1.RemoveAllViews();
             for (int i = 0; i < 9; i++)
             {
 
                 for (int j = 0; j < 9; j++)
                 {
                     cells[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight, 0, ButtonHeight, ButtonWidth, this);
-
-
-
-
                 }
             }
             //Console.WriteLine("Hello World!");
@@ -74,7 +85,7 @@ namespace SodokuTamir
 
         }
         //פונקציה המעבירה את ערכי הלוח למחרוזת אחת
-        public static string BoardToString(SudokuCell[,]arr)
+        public static string BoardToString(SudokuCell[,] arr)
         {
             string Str="";
             for(int i =0;i<9;i++)
@@ -110,20 +121,49 @@ namespace SodokuTamir
             myDir.Mkdir(); 
             string filename = Path.Combine(game_folder, Sname);
             FileStream fs = new FileStream(filename, FileMode.Create);
+
             byte[] bytes = Encoding.UTF8.GetBytes(BoardToString(cells));
 
             fs.Write(bytes, 0, bytes.Length);
             fs.Flush();
+            for (int i=0;i<9;i++) {
+                for (int j=0;j<9;j++)
+                {
+                    cells[i, j].getButton().Click += SodokuActivity_Click;
+                }
+            }
+        }
 
+        private void SodokuActivity_Click(object sender, EventArgs e)
+        {
+            // תנאי לסיום משחק
+            // לבדוק אם הכל שונה מ-0
+            // לבדוק שהכל כתוב עם עט
+            //
+            // למנוע מחיקה או שינוי של תאי מקור
+            // להוסיף כפתור לאיפוס הלוח
+            // להפריד צבעים עט ועפרון
+            //so.checkBoard();
+            
+            if(et!=null && et.Text!=null)
+            {
+                var button = (Button)sender;
+                
+            }
+        }
 
-
-
+        public void NumberEntry()
+        {
+            var editor = shared.Edit();
+            editor.PutString("Board",BoardToString(GuessCells));
+            editor.Commit();
         }
         public SudokuCell[,] CreateClues(SudokuCell[,] Original)
         {
             Random rnd = new Random();
             SudokuCell[,] Current = Original;
             int difficulty = 0;
+            //int[,] arr = getBoard(Original); 
             difficulty = Intent.GetIntExtra("difficulty", 0);
             string strBoard = BoardToString(Current).ToString();
             char[] board = strBoard.ToArray();
@@ -190,19 +230,45 @@ namespace SodokuTamir
                 Intent i = new Intent(this, typeof(MainActivity));
                 StartActivity(i);
             }
+            
             strBoard = new string(board);
-            Current = StringToBoard(strBoard);
-            return Current;
-        }
-        public SudokuCell[,] StringToBoard(string str)
-        {
-            SudokuCell[,] arr = new SudokuCell[9, 9];
-            int ButtonHeight = 120, ButtonWidth = 120;
+            SudokuCell[,]arr2 = new SudokuCell[9, 9];
+            arr2 = StringToBoard(strBoard);
+            
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    arr[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight, str[i * 9 + j], ButtonHeight, ButtonWidth, this);
+                    Current[i, j].setValue(arr2[i, j].getValue());
+                }
+            }
+            
+            return Current;
+        }
+        public int[,] getBoard(SudokuCell[,] suduko)
+        {
+            int[,] arr = new int[9, 9];
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    arr[i, j] = suduko[i, j].getValue();
+                }
+            }
+
+                    return arr;
+        }//הופך את המערך של מחלקה למערך של מספרים שלמים
+        public SudokuCell[,] StringToBoard(string str)
+        {
+            
+            SudokuCell[,] arr = new SudokuCell[9,9];
+            
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                  
+                     arr[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight, (Char)str[i * 9 + j]-'0', ButtonHeight, ButtonWidth, this);
                 }
             }
             return arr;
@@ -231,7 +297,12 @@ namespace SodokuTamir
             int number = rnd.Next(0, end);
             return number;
         }
-        
+        protected override void OnResume()
+        {
+            base.OnResume();
+            
+            //ShowBoard(GuessCells);
+        }
         public static bool generate_array(int[,] arr1, int x, int y, int[] allow_to_use1)
         {
            
@@ -334,8 +405,9 @@ namespace SodokuTamir
             //L1.RemoveAllViewsInLayout();
 
             finishedGenerating = true;
-            ShowBoard(CreateClues(cells));
-
+            GuessCells = CreateClues(cells);
+            ShowBoard(GuessCells); 
+            
 
             //_singleTone.on_board_ready(arr);
         }
@@ -402,7 +474,7 @@ namespace SodokuTamir
                 return false;
         }
 
-
+       
         public static bool check_sub_arr(int[,] arr, int start_pos_x, int start_pos_y)
         {
 

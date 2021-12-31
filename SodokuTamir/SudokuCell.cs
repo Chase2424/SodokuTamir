@@ -14,53 +14,44 @@ namespace SodokuTamir
     public class SudokuCell : Cube
     {
         private int[] remaining;
+        ISharedPreferences sp;
         private int x, y;
-        private bool Fixed = false;
+        private int permissions;
         private int Value;
         private Button btn ;
         private Context context;
 
-        public SudokuCell(int x, int y, int Value, int length, int width, Context context) : base(length, width)
+        public  SudokuCell(int x, int y, int Value, int length, int width, Context context) : base(length, width)
         {
             remaining = new int[9];
             for (int i = 0; i < 9; i++)
             {
                 remaining[i] = i;
             }
-
+            
+            
             this.x = x;
             this.btn = new Button(context);
+           
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, length);
 
             layoutParams.SetMargins(x + width - 120, y + length - 100, 0, 0);
             this.btn.LayoutParameters = layoutParams;
 
-
+           // EditText et2 = (EditText)context.FindViewById(Resource.Id.EditText);
             this.y = y;
             this.context = context;
             this.Value = Value;
             //this.btn.Width = this.x + this.width;
-            if (this.Value != 0)
-            {
-                this.Fixed = true;
-            }
-            else
-            {
-                this.Fixed = false;
-            }
+            
 
             // if (this.Fixed == false)
             //{
 
             //   this.btn.SetText(this.Value);
             // }
-            this.btn.Click += Btn_Click;
-
-
-
-
-
-
+           // this.btn.Click += Btn_Click;
+           
         }
 
         public void setValue(int value)
@@ -72,22 +63,50 @@ namespace SodokuTamir
         {
             return this.Value;
         }
+
         public Button getButton()
         {
+            permissions = 2;
             return this.btn;
+            
         }
         public Button getEmptyButton()
         {
             this.btn.Text = "";
+            permissions = 1;
             return this.btn;
         }
+        /*
         private void Btn_Click(object sender, EventArgs e)
         {
-           if (Fixed)
+            // תנאי לסיום משחק
+            // לבדוק אם הכל שונה מ-0
+            // לבדוק שהכל כתוב עם עט
+            //
+            // למנוע מחיקה או שינוי של תאי מקור
+            // להוסיף כפתור לאיפוס הלוח
+            // להפריד צבעים עט ועפרון
+            //so.checkBoard();
+            
+
+            
+            if (permissions!=2)
             {
-                
+                this.btn.Text = ""+permissions;
+                Intent i = new Intent(context, typeof(SodokuActivity));
+                i.PutExtra("L",this.L);
+                i.PutExtra("M",this.M);
+                context.StartActivity(i);
+
+                //int[,] board = so.getBoard(so.StringToBoard(str));
             }
-        }
+
+            
+            
+            
+
+            
+        }*/
         /*public int Value { get; set; }
 public bool Fixed { get; set; }
 public int X { get; set; }
