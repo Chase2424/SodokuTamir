@@ -114,20 +114,114 @@ namespace SodokuTamir
 
             fs.Write(bytes, 0, bytes.Length);
             fs.Flush();
-            
+
 
 
 
         }
+        public SudokuCell[,] CreateClues(SudokuCell[,] Original)
+        {
+            Random rnd = new Random();
+            SudokuCell[,] Current = Original;
+            int difficulty = 0;
+            difficulty = Intent.GetIntExtra("difficulty", 0);
+            string strBoard = BoardToString(Current).ToString();
+            char[] board = strBoard.ToArray();
+            if (difficulty == 1)
+            {
+                int i = 0;
+                while(i< 20)
+                {
+                    int number = rnd.Next(0, 81);
+                    if (board[number] != '0')
+                    {
+                        i++;
+                        board[number] = '0';
+                    }
 
-        public static void ShowBoard()
+                }/*
+                while (board.Count(f => (f == 0)) < 20)
+                {
+                    int number = rnd.Next(0, 81);
+                    board[number] = '0';
+                }*/
+            }
+            else if (difficulty == 2)
+            {
+                int i = 0;
+                while (i < 30)
+                {
+                    int number = rnd.Next(0, 81);
+                    if (board[number] != '0')
+                    {
+                        i++;
+                        board[number] = '0';
+                    }
+
+                }/*
+                while (board.Count(f => (f == 0)) < 30)
+                {
+                    int number = rnd.Next(0, 81);
+                    board[number] = '0';
+                }*/
+            }
+            else if (difficulty == 3)
+            {
+                int i = 0;
+                while (i < 40)
+                {
+                    int number = rnd.Next(0, 81);
+                    if (board[number] != '0')
+                    {
+                        i++;
+                        board[number] = '0';
+                    }
+
+                }/*
+                while (board.Count(f => (f == 0)) < 40)
+                {
+                    int number = rnd.Next(0, 81);
+                    board[number] = '0';
+                }*/
+            }
+            else
+            {
+                //לא אמור לקרות, רמת משחק לא מוכרת
+                Intent i = new Intent(this, typeof(MainActivity));
+                StartActivity(i);
+            }
+            strBoard = new string(board);
+            Current = StringToBoard(strBoard);
+            return Current;
+        }
+        public SudokuCell[,] StringToBoard(string str)
+        {
+            SudokuCell[,] arr = new SudokuCell[9, 9];
+            int ButtonHeight = 120, ButtonWidth = 120;
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    arr[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight, str[i * 9 + j], ButtonHeight, ButtonWidth, this);
+                }
+            }
+            return arr;
+        }
+        public static void ShowBoard(SudokuCell[,]board)
         {
             for (int i = 0; i < 9; i++)
             {
 
                 for (int j = 0; j < 9; j++)
                 {
-                    L1.AddView(cells[i, j].getButton());
+                    if (board[i, j].getValue() != 0)
+                    {
+                        L1.AddView(board[i, j].getButton());
+                    }
+                    else
+                    {
+                        L1.AddView(board[i, j].getEmptyButton());
+                    }
                 }
             }
         }
@@ -201,24 +295,9 @@ namespace SodokuTamir
                         {
                             //הגענו לסוף הלוח, הצלחה אמיתית GREAT SUCCESS
                             print_arr(arr, x, y);
-                            for (int k = 0; k < 9; k++)
-                            {
-                                for (int j = 0; j < 9; j++)
-                                {
-                                   cells[k, j].setValue(arr[k, j]);
-                                    
-                                }
-                            }
-                            _singleTone.SaveBoard();
-
-                            //L1.RemoveAllViewsInLayout();
-
+                            _singleTone.BoardReady(arr);
                             finishedGenerating = true;
-                            ShowBoard();
-
-
-                            //_singleTone.on_board_ready(arr);
-                           return true;
+                            return true;
 
                         }
                         x = 0;
@@ -240,7 +319,26 @@ namespace SodokuTamir
             return true;
         }
 
-        
+        public void BoardReady(int[,]board)
+        {
+            for (int k = 0; k < 9; k++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    cells[k, j].setValue(board[k, j]);
+
+                }
+            }
+            _singleTone.SaveBoard();
+
+            //L1.RemoveAllViewsInLayout();
+
+            finishedGenerating = true;
+            ShowBoard(CreateClues(cells));
+
+
+            //_singleTone.on_board_ready(arr);
+        }
         public static bool checkBoard(int[,] arr)
         {
             // הסתמש במיון דליים בכדי לספור מופעים של כל ספרה בכל ציר
@@ -349,17 +447,7 @@ namespace SodokuTamir
         }
     
 
-        public void AdjustBoard()
-        {
-          //  var editor = sp.Edit();
-           // difficulty = sp.GetInt("Difficulty", 0);
-         //   editor.Commit();
-            
-            if(difficulty==1)
-            {
-
-            }
-        }
+       
 
 
         public void setPermissions()

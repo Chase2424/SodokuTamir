@@ -76,6 +76,11 @@ namespace SodokuTamir
         {
             return this.btn;
         }
+        public Button getEmptyButton()
+        {
+            this.btn.Text = "";
+            return this.btn;
+        }
         private void Btn_Click(object sender, EventArgs e)
         {
            if (Fixed)

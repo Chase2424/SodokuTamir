@@ -56,6 +56,7 @@ namespace SodokuTamir
             int j = Intent.GetIntExtra("Position", 0);
 
         }
+        
         public SudokuCell[,] StringToBoard(string str)
         {
             SudokuCell[,] arr = new SudokuCell[9,9];

@@ -14,7 +14,7 @@ namespace SodokuTamir
     public class MainActivity : AppCompatActivity
     {
         PlayerAdapter adapter;
-        
+       
         public static List<Player> list = new List<Player>();
         Button btnStart, btnRecord;
         RadioButton Easy, Medium, Hard;
@@ -45,8 +45,22 @@ namespace SodokuTamir
 
         private void BtnStart_Click(object sender, System.EventArgs e)
         {
+            
+            
+            
             Intent intent = new Intent(this, typeof(SodokuActivity));
-
+            if (Hard.Checked)
+            {
+                intent.PutExtra("difficulty", 3);
+            }
+            else if (Medium.Checked)
+            {
+                intent.PutExtra("difficulty", 2);
+            }
+            else
+            {
+                intent.PutExtra("difficulty", 1);
+            }
             StartActivity(intent);
         }
 
