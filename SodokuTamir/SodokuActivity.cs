@@ -45,8 +45,11 @@ namespace SodokuTamir
         public static EditText et;
         private bool mExternalStorageAvailable;
         private bool mExternalStorageWriteable;
+        static bool gameStatus = false;
         String input;
         
+        LinearLayout l1;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -54,10 +57,20 @@ namespace SodokuTamir
             
             SetContentView(Resource.Layout.SodokuLayout);
             // Create your application here
+            finishedGenerating = false;
+            
+           if(gameStatus)
+            {
+
+                L1.RemoveAllViews();
+                gameStatus = false;
+            }
+            
             
             _singleTone = this;
             et = (EditText)FindViewById(Resource.Id.EditText);
             //et.Text="";
+            L1 = null;
             L1 = (RelativeLayout)FindViewById(Resource.Id.Board);
 
             startTime = Convert.ToDateTime(DateTime.Now.ToString());
@@ -70,7 +83,7 @@ namespace SodokuTamir
             Pen.Click += Pen_Click;
             Pencil.Click += Pencil_Click;
             setPermissions();
-            L1.RemoveAllViews();
+            
             for (int i = 0; i < 9; i++)
             {
 
@@ -247,16 +260,20 @@ namespace SodokuTamir
             }
         }
 
+
+        
         public void NumberEntry()
         {
             var editor = shared.Edit();
             editor.PutString("Board",BoardToString(GuessCells));
             editor.Commit();
         }
+
         public SudokuCell[,] CreateClues(SudokuCell[,] Original)
         {
             Random rnd = new Random();
             SudokuCell[,] Current = Original;
+
             difficulty = 0;
             //int[,] arr = getBoard(Original); 
             difficulty = Intent.GetIntExtra("difficulty", 0);
@@ -284,7 +301,7 @@ namespace SodokuTamir
             else if (difficulty == 2)
             {
                 int i = 0;
-                while (i < 30)
+                while (i < 20)
                 {
                     int number = rnd.Next(0, 81);
                     if (board[number] != '0')
@@ -303,7 +320,7 @@ namespace SodokuTamir
             else if (difficulty == 3)
             {
                 int i = 0;
-                while (i < 40)
+                while (i < 30)
                 {
                     int number = rnd.Next(0, 81);
                     if (board[number] != '0')
@@ -370,7 +387,7 @@ namespace SodokuTamir
         }
         public static void ShowBoard()
         {
-            
+            gameStatus = true;
             for (int i = 0; i < 9; i++)
             {
 
@@ -378,6 +395,7 @@ namespace SodokuTamir
                 {
                     if (GuessCells[i, j].getValue() != 0)
                     {
+                        
                         L1.AddView(GuessCells[i, j].getButton());
                     }
                     else
@@ -627,21 +645,21 @@ namespace SodokuTamir
             {
                 //we can read and write the media
                 mExternalStorageAvailable = mExternalStorageWriteable = true;
-                Toast.MakeText(this, "we can read and write the media", ToastLength.Long).Show();
+                //Toast.MakeText(this, "we can read and write the media", ToastLength.Long).Show();
             }
             else if (Android.OS.Environment.MediaMountedReadOnly.Equals(state))
             {
                 //we can only read the media
                 mExternalStorageAvailable = true;
                 mExternalStorageWriteable = false;
-                Toast.MakeText(this, "we can only read the media", ToastLength.Long).Show();
+                //Toast.MakeText(this, "we can only read the media", ToastLength.Long).Show();
 
             }
             else
             {
                 //something else is wrong. we can neither rad nor write
                 mExternalStorageAvailable = mExternalStorageWriteable = false;
-                Toast.MakeText(this, "something else is wrong. we can neither read nor write", ToastLength.Long).Show();
+                //Toast.MakeText(this, "something else is wrong. we can neither read nor write", ToastLength.Long).Show();
             }
         }
     }

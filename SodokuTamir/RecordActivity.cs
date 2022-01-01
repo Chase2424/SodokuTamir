@@ -26,10 +26,14 @@ namespace SodokuTamir
             SetContentView(Resource.Layout.Recordlayout);
             // Create your application here
             setPermissitios();
+            
+
             this.lv = (ListView)FindViewById(Resource.Id.Lview);
+
             //MainActivity.list.Add(new Player("Guy1", 200, "4th july 2020"));
             //MainActivity.list.Add(new Player("Guy2", 20020, "4th july 2020"));
             //MainActivity.list.Add(new Player("Girl", 100, "4th july 2020"));
+            MainActivity.list.Clear();
             ReadRecordFiles();
             lv.ItemClick += Lv_ItemClick;
         }
@@ -84,20 +88,20 @@ namespace SodokuTamir
             {
                 //We can read and write the media
                 mExternalStorageAvailable = mExternalStorageWriteable = true;
-                Toast.MakeText(this, "We can read and write the media", ToastLength.Long).Show();
+                //Toast.MakeText(this, "We can read and write the media", ToastLength.Long).Show();
             }
             else if (Android.OS.Environment.MediaMountedReadOnly.Equals(state))
             {
                 //We can only read the media
                 mExternalStorageAvailable = true;
                 mExternalStorageWriteable = false;
-                Toast.MakeText(this, "We can only read the media", ToastLength.Long).Show();
+                //Toast.MakeText(this, "We can only read the media", ToastLength.Long).Show();
             }
             else
             {
                 //Something else is wrong. we can neither read nor write
                 mExternalStorageAvailable = mExternalStorageWriteable = false;
-                Toast.MakeText(this, "Something else is wrong. we can neither read nor write", ToastLength.Long).Show();
+                //Toast.MakeText(this, "Something else is wrong. we can neither read nor write", ToastLength.Long).Show();
             }
         }
     }

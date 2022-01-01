@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.Graphics;
+using Android.Media;
 using Android.OS;
 using Android.Runtime;
 using Android.Widget;
@@ -19,13 +20,18 @@ namespace SodokuTamir
         Button btnStart, btnRecord;
         RadioButton Easy, Medium, Hard;
         EditText PlayerName;
+        MediaPlayer mp;
+        BroadcastBattery broadCastBattery;
+        AudioManager am;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
-            
+            mp = MediaPlayer.Create(this, Resource.Raw.Song);
+            am = (AudioManager)GetSystemService(Context.AudioService);
+            broadCastBattery = new BroadcastBattery(this);
             btnStart = (Button)FindViewById(Resource.Id.Start);
             btnRecord = (Button)FindViewById(Resource.Id.Record);
             Easy = (RadioButton)FindViewById(Resource.Id.Easy);
@@ -39,8 +45,34 @@ namespace SodokuTamir
         {
             void OnBackPressed();
         }
-        
-
+        protected override void OnResume()
+        {
+            base.OnResume();
+            RegisterReceiver(broadCastBattery, new IntentFilter(Intent.ActionBatteryChanged));
+        }
+        protected override void OnPause()
+        {
+            UnregisterReceiver(broadCastBattery);
+            base.OnPause();
+        }
+        public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Menu.MusicMenu, menu);
+            return true;
+        }
+        public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
+        {
+            base.OnOptionsItemSelected(item);
+            if (item.ItemId == Resource.Id.action_startMusic)
+            {
+                mp.Start();                      
+            }
+            else if (item.ItemId == Resource.Id.action_stopMusic)
+            {
+                mp.Pause();
+            }
+            return true;
+        }
         private void BtnRecord_Click(object sender, System.EventArgs e)
         {
             
