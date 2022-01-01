@@ -35,33 +35,50 @@ namespace SodokuTamir
             btnStart.Click += BtnStart_Click;
             btnRecord.Click += BtnRecord_Click;
         }
+        public interface IBackButtonListener
+        {
+            void OnBackPressed();
+        }
+        
 
         private void BtnRecord_Click(object sender, System.EventArgs e)
         {
-            Intent intent = new Intent(this, typeof(RecordActivity));
+            
 
-            StartActivity(intent);
+
+                Intent intent = new Intent(this, typeof(RecordActivity));
+
+                StartActivity(intent);
+            
+           
         }
-
+        
         private void BtnStart_Click(object sender, System.EventArgs e)
         {
-            
-            
-            
-            Intent intent = new Intent(this, typeof(SodokuActivity));
-            if (Hard.Checked)
+
+            if (PlayerName.Text != "")
             {
-                intent.PutExtra("difficulty", 3);
-            }
-            else if (Medium.Checked)
-            {
-                intent.PutExtra("difficulty", 2);
+
+                Intent intent = new Intent(this, typeof(SodokuActivity));
+                if (Hard.Checked)
+                {
+                    intent.PutExtra("difficulty", 3);
+                }
+                else if (Medium.Checked)
+                {
+                    intent.PutExtra("difficulty", 2);
+                }
+                else
+                {
+                    intent.PutExtra("difficulty", 1);
+                }
+                intent.PutExtra("PlayerName",PlayerName.Text);
+                StartActivity(intent);
             }
             else
             {
-                intent.PutExtra("difficulty", 1);
+                Toast.MakeText(this, "Please enter your name", ToastLength.Long).Show();
             }
-            StartActivity(intent);
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using Java.IO;
 using System;
+using Android.Icu.Text;
 
 namespace SodokuTamir
 {
@@ -24,9 +25,11 @@ namespace SodokuTamir
         static int lives=3;
         Button Pencil;
         //ISharedPreferences sp;
-         static int difficulty; 
+        static int difficulty;
         static SudokuCell[,] cells;
-         static RelativeLayout L1;
+        static DateTime startTime;
+        static TimeSpan duration;
+        static RelativeLayout L1;
         static int ButtonHeight = 120, ButtonWidth = 120;
         static SudokuCell[,] GuessCells;
         static List<int[,]> Solutions;
@@ -42,13 +45,17 @@ namespace SodokuTamir
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            _singleTone = this;
+           
             
             SetContentView(Resource.Layout.SodokuLayout);
             // Create your application here
+            
+            _singleTone = this;
             et = (EditText)FindViewById(Resource.Id.EditText);
             //et.Text="";
             L1 = (RelativeLayout)FindViewById(Resource.Id.Board);
+
+            startTime = Convert.ToDateTime(DateTime.Now.ToString());
             
             cells = new SudokuCell[9, 9];
             Eraser = (Button)FindViewById(Resource.Id.Eraser);
@@ -65,6 +72,7 @@ namespace SodokuTamir
                 for (int j = 0; j < 9; j++)
                 {
                     cells[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight,0, ButtonHeight, ButtonWidth, this);
+                   
                 }
             }
             //Console.WriteLine("Hello World!");
@@ -85,10 +93,11 @@ namespace SodokuTamir
             //  print_arr(board,0,0);
 
 
-
+            
 
         }
-
+        
+        
         private void Pencil_Click(object sender, EventArgs e)
         {
             this.toolType = 1;
@@ -123,7 +132,7 @@ namespace SodokuTamir
             
             Context context = this;
             ISharedPreferences sp = PreferenceManager.GetDefaultSharedPreferences(context);
-
+            string PlayerName = Intent.GetStringExtra("PlayerName");
             var editor = sp.Edit();
             
             editor.PutInt("Number", sp.GetInt("Number", 0) + 1);
@@ -132,7 +141,7 @@ namespace SodokuTamir
             string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
             string game_folder = root + "/saved_sodokus";
             Java.IO.File myDir = new Java.IO.File(game_folder);
-
+            
             
             Java.IO.File file = new Java.IO.File(myDir, Sname);
             if (file.Exists())
@@ -142,7 +151,7 @@ namespace SodokuTamir
             string filename = Path.Combine(game_folder, Sname);
             FileStream fs = new FileStream(filename, FileMode.Create);
 
-            byte[] bytes = Encoding.UTF8.GetBytes(BoardToString(cells));
+            byte[] bytes = Encoding.UTF8.GetBytes(PlayerName+" "+duration + " " + BoardToString(cells));
 
             fs.Write(bytes, 0, bytes.Length);
             fs.Flush();
@@ -153,17 +162,14 @@ namespace SodokuTamir
                 }
             }
         }
-
+        /*
+        public void onBackPressed()
+        {
+            Toast.MakeText(this, " Press Back again to Exit ", ToastLength.Short).Show();
+            return;
+        }*/
         private void SodokuActivity_Click(object sender, EventArgs e)
         {
-            // תנאי לסיום משחק
-            // לבדוק אם הכל שונה מ-0
-            // לבדוק שהכל כתוב עם עט
-            //
-            // למנוע מחיקה או שינוי של תאי מקור
-            // להוסיף כפתור לאיפוס הלוח
-            // להפריד צבעים עט ועפרון
-            //so.checkBoard();
             Button button = sender as Button;
             int btnTag = (int)button.Tag;
             //התיוג של הכפתור משמש לדעת האם המשבצת נרשמה על ידי המשתמש או על ידינו
@@ -177,7 +183,6 @@ namespace SodokuTamir
                 else if(toolType == 1)
                 {
                     button.Hint = et.Text;
-
                 }
                 else
                 {
@@ -197,6 +202,7 @@ namespace SodokuTamir
                                 {
                                     L1.RemoveAllViewsInLayout();
                                     Toast.MakeText(this, "GAME-OVER", ToastLength.Long).Show();
+                                    
                                     Intent i = new Intent(this, typeof(MainActivity));
                                     StartActivity(i);
                                 }
@@ -211,6 +217,12 @@ namespace SodokuTamir
                                if( !BoardToString(GuessCells).Contains('0'))
                                 {
                                     Toast.MakeText(this, "Congratulations you have won", ToastLength.Long).Show();
+                                    DateTime endtime = Convert.ToDateTime(DateTime.Now.ToString());
+                                    duration = endtime - startTime;
+                                    SaveBoard();
+                                    Intent i = new Intent(this, typeof(MainActivity));
+                                    StartActivity(i);
+
                                 }
                             }
 
@@ -586,10 +598,10 @@ namespace SodokuTamir
                 System.Console.WriteLine("\n");
             }
         }
-    
 
-       
 
+
+        
 
         public void setPermissions()
         {
