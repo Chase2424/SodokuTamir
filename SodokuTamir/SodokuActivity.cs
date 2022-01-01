@@ -19,6 +19,7 @@ namespace SodokuTamir
     {
         static SodokuActivity _singleTone;
         Button Eraser;
+        int toolType=1;//0-eraser,1-pencil,2-pen
         Button Pen;
             Button Pencil;
         //ISharedPreferences sp;
@@ -52,7 +53,9 @@ namespace SodokuTamir
             Eraser = (Button)FindViewById(Resource.Id.Eraser);
             Pen = (Button)FindViewById(Resource.Id.Pen);
             Pencil = (Button)FindViewById(Resource.Id.Pencil);
-            
+            Eraser.Click += Eraser_Click;
+            Pen.Click += Pen_Click;
+            Pencil.Click += Pencil_Click;
             setPermissions();
             L1.RemoveAllViews();
             for (int i = 0; i < 9; i++)
@@ -84,6 +87,22 @@ namespace SodokuTamir
 
 
         }
+
+        private void Pencil_Click(object sender, EventArgs e)
+        {
+            this.toolType = 1;
+        }
+
+        private void Pen_Click(object sender, EventArgs e)
+        {
+            this.toolType = 2;
+        }
+
+        private void Eraser_Click(object sender, EventArgs e)
+        {
+            this.toolType = 0;
+        }
+
         //פונקציה המעבירה את ערכי הלוח למחרוזת אחת
         public static string BoardToString(SudokuCell[,] arr)
         {
@@ -144,11 +163,26 @@ namespace SodokuTamir
             // להוסיף כפתור לאיפוס הלוח
             // להפריד צבעים עט ועפרון
             //so.checkBoard();
-            
-            if(et!=null && et.Text!=null)
+            Button button = sender as Button;
+            int btnTag = (int)button.Tag;
+            //התיוג של הכפתור משמש לדעת האם המשבצת נרשמה על ידי המשתמש או על ידינו
+            if (et!=null && et.Text!=null && btnTag!=2 )
             {
-                var button = (Button)sender;
-                
+                //בדיקת סוג הכלי אשר הוא מנסה לשנות איתו
+                if (toolType == 0)
+                {
+                    button.Hint = "";
+                }
+                else if(toolType == 1)
+                {
+                    button.Hint = et.Text;
+
+                }
+                else
+                {
+
+                    if()
+                }
             }
         }
 
@@ -297,12 +331,7 @@ namespace SodokuTamir
             int number = rnd.Next(0, end);
             return number;
         }
-        protected override void OnResume()
-        {
-            base.OnResume();
-            
-            //ShowBoard(GuessCells);
-        }
+        
         public static bool generate_array(int[,] arr1, int x, int y, int[] allow_to_use1)
         {
            

@@ -14,15 +14,16 @@ namespace SodokuTamir
     public class SudokuCell : Cube
     {
         private int[] remaining;
-        ISharedPreferences sp;
+        public int Medium = 2;
         private int x, y;
-        private int permissions;
         private int Value;
-        private Button btn ;
+        private Button btn;
         private Context context;
+        
 
-        public  SudokuCell(int x, int y, int Value, int length, int width, Context context) : base(length, width)
+        public SudokuCell(int x, int y, int Value, int length, int width, Context context) : base(length, width)
         {
+
             remaining = new int[9];
             for (int i = 0; i < 9; i++)
             {
@@ -31,20 +32,22 @@ namespace SodokuTamir
             
             
             this.x = x;
-            this.btn = new Button(context);
-           
+            this.btn = new Button(context) ;
+            
+
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, length);
 
             layoutParams.SetMargins(x + width - 120, y + length - 100, 0, 0);
             this.btn.LayoutParameters = layoutParams;
-
            // EditText et2 = (EditText)context.FindViewById(Resource.Id.EditText);
             this.y = y;
             this.context = context;
             this.Value = Value;
-            //this.btn.Width = this.x + this.width;
             
 
+            //this.btn.Width = this.x + this.width;
+            
+            
             // if (this.Fixed == false)
             //{
 
@@ -62,18 +65,21 @@ namespace SodokuTamir
         public int getValue()
         {
             return this.Value;
+            
         }
 
         public Button getButton()
         {
-            permissions = 2;
-            return this.btn;
             
+            btn.Tag = 2;
+            return this.btn;
         }
         public Button getEmptyButton()
         {
             this.btn.Text = "";
-            permissions = 1;
+            this.btn.SetBackgroundColor(Android.Graphics.Color.Gray);
+            
+            btn.Tag = 1;
             return this.btn;
         }
         /*
