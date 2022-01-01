@@ -16,7 +16,7 @@ namespace SodokuTamir
         private int[] remaining;
         public int Medium = 2;
         private int x, y;
-        private int Value;
+        
         private Button btn;
         private Context context;
         
@@ -33,8 +33,8 @@ namespace SodokuTamir
             
             this.x = x;
             this.btn = new Button(context) ;
-            
 
+            this.btn.Text = "" + Value;
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, length);
 
             layoutParams.SetMargins(x + width - 120, y + length - 100, 0, 0);
@@ -42,7 +42,7 @@ namespace SodokuTamir
            // EditText et2 = (EditText)context.FindViewById(Resource.Id.EditText);
             this.y = y;
             this.context = context;
-            this.Value = Value;
+            
             
 
             //this.btn.Width = this.x + this.width;
@@ -59,12 +59,16 @@ namespace SodokuTamir
 
         public void setValue(int value)
         {
-            this.Value = value;
+            
             this.btn.Text = ""+value;
         }
         public int getValue()
         {
-            return this.Value;
+            if (btn.Text != "")
+            {
+                return Int32.Parse(btn.Text);
+            }
+            return 0;
             
         }
 

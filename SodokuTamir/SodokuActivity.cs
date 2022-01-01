@@ -19,9 +19,10 @@ namespace SodokuTamir
     {
         static SodokuActivity _singleTone;
         Button Eraser;
-        int toolType=1;//0-eraser,1-pencil,2-pen
+        int toolType= 1;//0-eraser,1-pencil,2-pen
         Button Pen;
-            Button Pencil;
+        static int lives=3;
+        Button Pencil;
         //ISharedPreferences sp;
          static int difficulty; 
         static SudokuCell[,] cells;
@@ -63,7 +64,7 @@ namespace SodokuTamir
 
                 for (int j = 0; j < 9; j++)
                 {
-                    cells[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight, 0, ButtonHeight, ButtonWidth, this);
+                    cells[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight,0, ButtonHeight, ButtonWidth, this);
                 }
             }
             //Console.WriteLine("Hello World!");
@@ -180,8 +181,47 @@ namespace SodokuTamir
                 }
                 else
                 {
+                    try
+                    {
+                        int input = Int32.Parse(et.Text);
+                        if(input >0 && input<10)
+                        {
+                            button.Text = et.Text;
+                            int[,] arr = new int[9, 9];
+                            arr = getBoard(GuessCells);
+                            if (!checkBoard(arr))
+                            {
+                                button.Text = "";
+                                lives = lives - 1;
+                                if (lives == 0)
+                                {
+                                    L1.RemoveAllViewsInLayout();
+                                    Toast.MakeText(this, "GAME-OVER", ToastLength.Long).Show();
+                                    Intent i = new Intent(this, typeof(MainActivity));
+                                    StartActivity(i);
+                                }
+                                else
+                                {
+                                    Toast.MakeText(this, "You have:"+lives+"lives left", ToastLength.Long).Show();
+                                }
+                                
+                            }
+                            else
+                            {
+                               if( !BoardToString(GuessCells).Contains('0'))
+                                {
+                                    Toast.MakeText(this, "Congratulations you have won", ToastLength.Long).Show();
+                                }
+                            }
 
-                    if()
+                        }
+                    }
+                    catch
+                    {
+                        Toast.MakeText(this, "please enter numbers only", ToastLength.Long).Show() ;
+                        
+
+                    }
                 }
             }
         }
@@ -204,7 +244,7 @@ namespace SodokuTamir
             if (difficulty == 1)
             {
                 int i = 0;
-                while(i< 20)
+                while(i< 3)
                 {
                     int number = rnd.Next(0, 81);
                     if (board[number] != '0')
@@ -285,12 +325,12 @@ namespace SodokuTamir
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
-                {
+                { 
                     arr[i, j] = suduko[i, j].getValue();
                 }
             }
 
-                    return arr;
+           return arr;
         }//הופך את המערך של מחלקה למערך של מספרים שלמים
         public SudokuCell[,] StringToBoard(string str)
         {
@@ -307,20 +347,20 @@ namespace SodokuTamir
             }
             return arr;
         }
-        public static void ShowBoard(SudokuCell[,]board)
+        public static void ShowBoard()
         {
             for (int i = 0; i < 9; i++)
             {
 
                 for (int j = 0; j < 9; j++)
                 {
-                    if (board[i, j].getValue() != 0)
+                    if (GuessCells[i, j].getValue() != 0)
                     {
-                        L1.AddView(board[i, j].getButton());
+                        L1.AddView(GuessCells[i, j].getButton());
                     }
                     else
                     {
-                        L1.AddView(board[i, j].getEmptyButton());
+                        L1.AddView(GuessCells[i, j].getEmptyButton());
                     }
                 }
             }
@@ -431,11 +471,11 @@ namespace SodokuTamir
             }
             _singleTone.SaveBoard();
 
-            //L1.RemoveAllViewsInLayout();
+            //
 
             finishedGenerating = true;
             GuessCells = CreateClues(cells);
-            ShowBoard(GuessCells); 
+            ShowBoard(); 
             
 
             //_singleTone.on_board_ready(arr);
