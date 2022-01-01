@@ -96,7 +96,7 @@ namespace SodokuTamir
 
             //  print_arr(board,0,0);
 
-            SaveBoard();
+            
 
 
         }

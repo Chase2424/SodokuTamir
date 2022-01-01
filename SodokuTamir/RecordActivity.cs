@@ -45,10 +45,10 @@ namespace SodokuTamir
         {
             string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
             string game_folder = root + "/saved_sodokus";
-            string[]files = Directory.GetFiles(game_folder);
+            string[] files = Directory.GetFiles(game_folder);
             foreach (string oCurrent in files)
             {
-                string text = System.IO.File.ReadAllText( oCurrent);
+                string text = System.IO.File.ReadAllText(oCurrent);
                 string PlayerName = text.Split(",")[0];
                 string duration = text.Split(",")[1];
                 string Date = text.Split(",")[2];
@@ -57,10 +57,25 @@ namespace SodokuTamir
 
 
 
-                MainActivity.list.Add(new Player(PlayerName, duration, Date, Board));
+                MainActivity.list.Add(new Player(PlayerName, duration, Date, StringToBoard(Board)));
             }
             this.adapter = new PlayerAdapter(this, MainActivity.list);
             this.lv.Adapter = adapter;
+        }
+        public SudokuCell[,] StringToBoard(string str)
+        {
+
+            SudokuCell[,] arr = new SudokuCell[9, 9];
+
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+
+                    arr[i, j] = new SudokuCell(j * 120, i * 120, (Char)str[i * 9 + j] - '0', 120, 120, this);
+                }
+            }
+            return arr;
         }
         public void setPermissitios()
         {

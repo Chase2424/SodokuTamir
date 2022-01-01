@@ -16,9 +16,9 @@ namespace SodokuTamir
         private string name;//Name of the player
         private string Time;//The time it took for the player to solve the sudoku
         private string Date;//The Date the game took place in
-        private string SodokuBoard;//The PlayersSodoku
+        private SudokuCell[,] SodokuBoard;//The PlayersSodoku
 
-        public Player(string name, string Time, string Date,string SodokuBoard)
+        public Player(string name, string Time, string Date, SudokuCell[,] SodokuBoard)
         {
             this.name = name;
             this.Time = Time;
@@ -37,7 +37,7 @@ namespace SodokuTamir
         {
             return this.Date;
         }
-        public string getBoard()
+        public SudokuCell[,] getBoard()
         {
             return this.SodokuBoard;
         }

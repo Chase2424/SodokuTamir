@@ -56,7 +56,7 @@ namespace SodokuTamir
         private void BtnStart_Click(object sender, System.EventArgs e)
         {
 
-            if (PlayerName.Text != "")
+            if (PlayerName.Text != "" && !(PlayerName.Text.Contains(",")))
             {
 
                 Intent intent = new Intent(this, typeof(SodokuActivity));
@@ -77,7 +77,7 @@ namespace SodokuTamir
             }
             else
             {
-                Toast.MakeText(this, "Please enter your name", ToastLength.Long).Show();
+                Toast.MakeText(this, "Please enter your name only with the a-z and numbers", ToastLength.Long).Show();
             }
         }
 
