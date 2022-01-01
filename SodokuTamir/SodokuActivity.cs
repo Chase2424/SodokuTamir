@@ -12,7 +12,12 @@ using System.Text;
 using Java.IO;
 using System;
 using Android.Icu.Text;
-
+//TODO
+// merge cells and getcells
+// add numbers keyboard
+// fix application close
+// fix back button
+// add clean file button
 namespace SodokuTamir
 {
     [Activity(Label = "Sodoku")]
@@ -89,11 +94,10 @@ namespace SodokuTamir
             board[0, 0] = allow_to_use1[rndNum];
             generate_array(board, 1, 0, allow_to_use1);
 
-
             //  print_arr(board,0,0);
 
+            SaveBoard();
 
-            
 
         }
         
@@ -126,10 +130,16 @@ namespace SodokuTamir
             }
             return Str;
         }
-        public  void SaveBoard()
+        public void SaveBoard()
         {
-
-            
+            string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
+            string game_folder = root + "/saved_sodokus";
+            int fCount = Directory.GetFiles(game_folder, "*", SearchOption.TopDirectoryOnly).Length;
+            if ((int)fCount > 50)
+            {
+                Toast.MakeText(this, " Too many files, please clean some sodoku files  ", ToastLength.Short).Show();
+                return;
+            }
             Context context = this;
             ISharedPreferences sp = PreferenceManager.GetDefaultSharedPreferences(context);
             string PlayerName = Intent.GetStringExtra("PlayerName");
@@ -138,29 +148,28 @@ namespace SodokuTamir
             editor.PutInt("Number", sp.GetInt("Number", 0) + 1);
             String Sname = "Sodoku-" + sp.GetInt("Number", 0) + ".txt";
             editor.Commit();
-            string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
-            string game_folder = root + "/saved_sodokus";
-            Java.IO.File myDir = new Java.IO.File(game_folder);
             
+            Java.IO.File myDir = new Java.IO.File(game_folder);
+            myDir.Mkdir(); 
             
             Java.IO.File file = new Java.IO.File(myDir, Sname);
             if (file.Exists())
                 file.Delete();
             
-            myDir.Mkdir(); 
+            
             string filename = Path.Combine(game_folder, Sname);
             FileStream fs = new FileStream(filename, FileMode.Create);
 
-            byte[] bytes = Encoding.UTF8.GetBytes(PlayerName+" "+duration + " " + BoardToString(cells));
+            byte[] bytes = Encoding.UTF8.GetBytes(PlayerName+","+duration + ","+startTime+"," + BoardToString(cells));
 
             fs.Write(bytes, 0, bytes.Length);
-            fs.Flush();
+            fs.Flush();/*
             for (int i=0;i<9;i++) {
                 for (int j=0;j<9;j++)
                 {
                     cells[i, j].getButton().Click += SodokuActivity_Click;
                 }
-            }
+            }*/
         }
         /*
         public void onBackPressed()
@@ -248,7 +257,7 @@ namespace SodokuTamir
         {
             Random rnd = new Random();
             SudokuCell[,] Current = Original;
-            int difficulty = 0;
+            difficulty = 0;
             //int[,] arr = getBoard(Original); 
             difficulty = Intent.GetIntExtra("difficulty", 0);
             string strBoard = BoardToString(Current).ToString();
@@ -361,6 +370,7 @@ namespace SodokuTamir
         }
         public static void ShowBoard()
         {
+            
             for (int i = 0; i < 9; i++)
             {
 
@@ -481,13 +491,20 @@ namespace SodokuTamir
 
                 }
             }
-            _singleTone.SaveBoard();
+            //_singleTone.SaveBoard();
 
             //
 
             finishedGenerating = true;
             GuessCells = CreateClues(cells);
-            ShowBoard(); 
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    GuessCells[i, j].getButton().Click += SodokuActivity_Click;
+                }
+            }
+            ShowBoard();
             
 
             //_singleTone.on_board_ready(arr);
