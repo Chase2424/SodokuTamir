@@ -387,6 +387,7 @@ namespace SodokuTamir
         }
         public static void ShowBoard()
         {
+            L1.RemoveAllViews();
             gameStatus = true;
             for (int i = 0; i < 9; i++)
             {
@@ -395,13 +396,20 @@ namespace SodokuTamir
                 {
                     if (GuessCells[i, j].getValue() != 0)
                     {
-                        
                         L1.AddView(GuessCells[i, j].getButton());
+
                     }
                     else
                     {
                         L1.AddView(GuessCells[i, j].getEmptyButton());
-                    }
+                    }/*
+                    if (j % 3 == 0 && j != 0)
+                    {
+                        Button btn = new Button(_singleTone);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(5, 5);
+                        layoutParams.SetMargins(GuessCells[i, j].getX() + GuessCells[i, j].getWidth(), GuessCells[i, j].getY(), 0, 0);
+                        L1.AddView(btn);
+                    }*/
                 }
             }
         }
