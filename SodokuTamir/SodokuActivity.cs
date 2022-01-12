@@ -387,6 +387,7 @@ namespace SodokuTamir
         }
         public static void ShowBoard()
         {
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(20, GuessCells[0,0].getLength());
             L1.RemoveAllViews();
             gameStatus = true;
             for (int i = 0; i < 9; i++)
@@ -396,6 +397,15 @@ namespace SodokuTamir
                 {
                     if (GuessCells[i, j].getValue() != 0)
                     {
+                        if(j%3==0)
+                        {                          
+                            layoutParams.SetMargins(GuessCells[i, j].getX(), GuessCells[i, j].getY(), 0, 0);
+                            TextView tv = new TextView(_singleTone);
+                            tv.Text = "|";
+                            tv.LayoutParameters = layoutParams;
+                            tv.TextSize = 20; 
+                            L1.AddView(tv);
+                        }
                         L1.AddView(GuessCells[i, j].getButton());
 
                     }
