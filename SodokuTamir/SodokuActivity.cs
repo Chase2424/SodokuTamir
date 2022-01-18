@@ -58,13 +58,13 @@ namespace SodokuTamir
             SetContentView(Resource.Layout.SodokuLayout);
             // Create your application here
             finishedGenerating = false;
-            
+            /*
            if(gameStatus)
             {
 
                 L1.RemoveAllViews();
                 gameStatus = false;
-            }
+            }*/
             
             
             _singleTone = this;
@@ -387,7 +387,7 @@ namespace SodokuTamir
         }
         public static void ShowBoard()
         {
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(20, GuessCells[0,0].getLength());
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(GuessCells[0,0].getWidth(), GuessCells[0,0].getLength());
             L1.RemoveAllViews();
             gameStatus = true;
             for (int i = 0; i < 9; i++)
@@ -397,13 +397,13 @@ namespace SodokuTamir
                 {
                     if (GuessCells[i, j].getValue() != 0)
                     {
-                        if(j%3==0)
-                        {                          
-                            layoutParams.SetMargins(GuessCells[i, j].getX(), GuessCells[i, j].getY(), 0, 0);
+                        if (j % 3 == 0 & j != 0)
+                        {
+                            layoutParams.SetMargins(GuessCells[i, j].getX()-10, GuessCells[i, j].getY(), 0, 0);
                             TextView tv = new TextView(_singleTone);
                             tv.Text = "|";
                             tv.LayoutParameters = layoutParams;
-                            tv.TextSize = 20; 
+                            tv.TextSize = 20;
                             L1.AddView(tv);
                         }
                         L1.AddView(GuessCells[i, j].getButton());
@@ -412,14 +412,21 @@ namespace SodokuTamir
                     else
                     {
                         L1.AddView(GuessCells[i, j].getEmptyButton());
-                    }/*
-                    if (j % 3 == 0 && j != 0)
+                    }
+                    
+                }
+                if (i % 3 == 0&i!=0)
+                {
+                    LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(GuessCells[0, 0].getWidth() , 200);
+                    for (int k = 0;k<9;k++)
                     {
-                        Button btn = new Button(_singleTone);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(5, 5);
-                        layoutParams.SetMargins(GuessCells[i, j].getX() + GuessCells[i, j].getWidth(), GuessCells[i, j].getY(), 0, 0);
-                        L1.AddView(btn);
-                    }*/
+                        TextView tv2 = new TextView(_singleTone);
+                        layoutParams2.SetMargins(GuessCells[0, 0].getLength() * k, GuessCells[0, 0].getLength() * i-75 , 0, 0);
+                        tv2.Text = "_";
+                        tv2.LayoutParameters = layoutParams2;
+                        tv2.TextSize = 30;
+                        L1.AddView(tv2);
+                    }
                 }
             }
         }
