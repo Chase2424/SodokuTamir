@@ -59,8 +59,9 @@ namespace SodokuTamir
                     }
                 }
             }
-            catch
+            catch(Exception e)
             {
+                
                 this.cells = new SudokuCell[9, 9];
 
                 for (int i = 0; i < 9; i++)
