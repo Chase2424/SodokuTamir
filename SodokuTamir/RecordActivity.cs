@@ -17,6 +17,7 @@ namespace SodokuTamir
     {
         ListView lv;
         PlayerAdapter adapter;
+        
         private bool mExternalStorageAvailable;
         private bool mExternalStorageWriteable;
 

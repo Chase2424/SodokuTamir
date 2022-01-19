@@ -29,6 +29,7 @@ namespace SodokuTamir
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
+            
             mp = MediaPlayer.Create(this, Resource.Raw.Song);
             am = (AudioManager)GetSystemService(Context.AudioService);
             broadCastBattery = new BroadcastBattery(this);

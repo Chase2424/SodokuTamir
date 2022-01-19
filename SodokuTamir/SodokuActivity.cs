@@ -241,9 +241,14 @@ namespace SodokuTamir
                                     Toast.MakeText(this, "Congratulations you have won", ToastLength.Long).Show();
                                     DateTime endtime = Convert.ToDateTime(DateTime.Now.ToString());
                                     duration = endtime - startTime;
-                                    SaveBoard();
-                                    Intent i = new Intent(this, typeof(MainActivity));
-                                    StartActivity(i);
+                                    Dialog d = new Dialog(this);
+                                    d.SetContentView(Resource.Layout.SaveOutside);
+                                    Button privately = (Button)d.FindViewById(Resource.Id.Private);
+                                    Button publicly = (Button)d.FindViewById(Resource.Id.Public);
+                                    d.Show();
+                                    privately.Click += Privately_Click;
+                                    publicly.Click += Publicly_Click;
+                                    
 
                                 }
                             }
@@ -260,8 +265,18 @@ namespace SodokuTamir
             }
         }
 
+        private void Publicly_Click(object sender, EventArgs e)
+        {
+           //doFireWallStuff
+        }
 
-        
+        private void Privately_Click(object sender, EventArgs e)
+        {
+            SaveBoard();
+            Intent i = new Intent(this, typeof(MainActivity));
+            StartActivity(i);
+        }
+
         public void NumberEntry()
         {
             var editor = shared.Edit();
