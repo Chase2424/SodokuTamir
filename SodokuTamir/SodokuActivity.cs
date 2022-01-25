@@ -265,12 +265,15 @@ namespace SodokuTamir
             }
         }
 
-        private void Publicly_Click(object sender, EventArgs e)
+        private async void Publicly_Click(object sender, EventArgs e)
         {
-           //doFireWallStuff
+            //doFireWallStuff
+            string PlayerName = Intent.GetStringExtra("PlayerName");
+            Player p = new Player(PlayerName, ""+duration, ""+startTime, cells);
+            await FirebaseUser.AddScore(p);
         }
 
-        private void Privately_Click(object sender, EventArgs e)
+        private void  Privately_Click(object sender, EventArgs e)
         {
             SaveBoard();
             Intent i = new Intent(this, typeof(MainActivity));

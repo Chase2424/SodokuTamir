@@ -13,11 +13,15 @@ namespace SodokuTamir
 {
     public class Player
     {
-        private string name;//Name of the player
-        private string Time;//The time it took for the player to solve the sudoku
-        private string Date;//The Date the game took place in
-        private SudokuCell[,] SodokuBoard;//The PlayersSodoku
+        public string name;//Name of the player
+        public string Time;//The time it took for the player to solve the sudoku
+        public string Date;//The Date the game took place in
+        public SudokuCell[,] SodokuBoard;//The PlayersSodoku
 
+        public Player()
+        {
+
+        }
         public Player(string name, string Time, string Date, SudokuCell[,] SodokuBoard)
         {
             this.name = name;
