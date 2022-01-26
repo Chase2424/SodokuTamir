@@ -271,6 +271,8 @@ namespace SodokuTamir
             string PlayerName = Intent.GetStringExtra("PlayerName");
             Player p = new Player(PlayerName, ""+duration, ""+startTime, cells);
             await FirebaseUser.AddScore(p);
+            Intent i = new Intent(this, typeof(MainActivity));
+            StartActivity(i);
         }
 
         private void  Privately_Click(object sender, EventArgs e)
