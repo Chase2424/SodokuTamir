@@ -20,6 +20,7 @@ namespace SodokuTamir
         Button btnStart, btnRecord;
         RadioButton Easy, Medium, Hard;
         EditText PlayerName;
+
         MediaPlayer mp;
         BroadcastBattery broadCastBattery;
         AudioManager am;
@@ -33,7 +34,7 @@ namespace SodokuTamir
             mp = MediaPlayer.Create(this, Resource.Raw.Song);
             am = (AudioManager)GetSystemService(Context.AudioService);
             broadCastBattery = new BroadcastBattery(this);
-            btnStart = (Button)FindViewById(Resource.Id.Start);
+            btnStart = (Button)FindViewById(Resource.Id.start);
             btnRecord = (Button)FindViewById(Resource.Id.Record);
             Easy = (RadioButton)FindViewById(Resource.Id.Easy);
             Medium = (RadioButton)FindViewById(Resource.Id.Medium);
@@ -76,16 +77,33 @@ namespace SodokuTamir
         }
         private void BtnRecord_Click(object sender, System.EventArgs e)
         {
-            
 
 
-                Intent intent = new Intent(this, typeof(RecordActivity));
+            Dialog d = new Dialog(this);
+            d.SetContentView(Resource.Layout.OutsideInside);
+            Button privately = (Button)d.FindViewById(Resource.Id.privateresult);
+            Button globally = (Button)d.FindViewById(Resource.Id.globalresult);
+            d.Show();
+            privately.Click += Privately_Click;
 
-                StartActivity(intent);
-            
+            globally.Click += Globally_Click;
            
         }
-        
+
+        private void Globally_Click(object sender, EventArgs e)
+        {
+            Intent intent = new Intent(this, typeof(PublicScores));
+
+            StartActivity(intent);
+        }
+
+        private void Privately_Click(object sender, EventArgs e)
+        {
+            Intent intent = new Intent(this, typeof(RecordActivity));
+
+            StartActivity(intent);
+        }
+
         private void BtnStart_Click(object sender, System.EventArgs e)
         {
 

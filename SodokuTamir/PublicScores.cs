@@ -22,8 +22,16 @@ namespace SodokuTamir
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.PublicScores);
             // Create your application here
-            this.lv = (ListView)FindViewById(Resource.Id.PublicLview);
-            //listPublic = await FirebaseUser.GetAll();
+            this.lv = (ListView)FindViewById(Resource.Id.publicLview);
+            doStuff();
+            
+        }
+       
+        public async void doStuff()
+        {
+            listPublic = await FirebaseUser.GetAll();
+            this.adapter = new PlayerAdapter(this, listPublic);
+            this.lv.Adapter = adapter;
         }
     }
 }

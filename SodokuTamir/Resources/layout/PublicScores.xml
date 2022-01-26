@@ -8,5 +8,5 @@
         android:layout_height="match_parent"
           
 
-        android:id="@+id/PublicLview"/>
+        android:id="@+id/publicLview"/>
 </LinearLayout>
