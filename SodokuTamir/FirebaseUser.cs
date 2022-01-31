@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
 namespace SodokuTamir
@@ -18,7 +19,7 @@ namespace SodokuTamir
     {
         public static FirebaseClient firebase = new FirebaseClient("https://sodokutamir-default-rtdb.firebaseio.com/");
         public static string tableName = "sodokutamir";
-        public static async Task<List<Player>> GetAll()
+       /* public static async Task<List<Player>> GetAll()
         {
             return (await firebase
                 .Child(tableName)
@@ -30,6 +31,19 @@ namespace SodokuTamir
                     SodokuBoard = item.Object.SodokuBoard
 
                 }).ToList();
+        }*/
+       public static async Task<List<Player>> GetAll()
+        {
+            return (await firebase
+               .Child(tableName)
+               .OnceAsync<JObject>()).Select(item => new Player
+               {
+                   name = (string)item.Object.GetValue("name"),
+                   Time = (string)item.Object.Time,
+                   Date = (string)item.Object.Date,
+                   SodokuBoard = (SudokuCell[,])item.Object.SodokuBoard
+
+               }).ToList();
         }
         public static async Task AddScore(Player player)
         {

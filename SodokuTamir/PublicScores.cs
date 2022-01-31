@@ -29,7 +29,13 @@ namespace SodokuTamir
        
         public async void doStuff()
         {
-            listPublic = await FirebaseUser.GetAll();
+            List<Player> decoy = new List<Player>();
+            decoy = await FirebaseUser.GetAll();
+            for (int i=0;i<decoy.Count();i++)
+            {
+                listPublic.Add(decoy[i]);   
+            }
+           
             this.adapter = new PlayerAdapter(this, listPublic);
             this.lv.Adapter = adapter;
         }
