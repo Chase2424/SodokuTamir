@@ -15,12 +15,14 @@ namespace SodokuTamir
     {
         Android.Content.Context context;
         List<Player> objects;
+        Android.Views.LayoutInflater layoutInflater;
+        public string activity;
         //see if it works
-        public PlayerAdapter(Android.Content.Context context, System.Collections.Generic.List<Player> objects)
+        public PlayerAdapter(Android.Content.Context context, System.Collections.Generic.List<Player> objects,string activity)
         {
             this.context = context;
             this.objects = objects;
-
+            this.activity = activity;
         }
         public List<Player> GetList()
         {
@@ -46,7 +48,14 @@ namespace SodokuTamir
         }
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
-            Android.Views.LayoutInflater layoutInflater = ((RecordActivity)context).LayoutInflater;
+            if (activity.Equals("RecordActivity"))
+            {
+                layoutInflater = ((RecordActivity)context).LayoutInflater;
+            }
+            else
+            {
+                layoutInflater = ((PublicScores)context).LayoutInflater;
+            }
             Android.Views.View view = layoutInflater.Inflate(Resource.Layout.PlayerLayout, parent, false);
             TextView Name = view.FindViewById<TextView>(Resource.Id.name);
             TextView Time = view.FindViewById<TextView>(Resource.Id.time);

@@ -17,7 +17,7 @@ namespace SodokuTamir
     {
         ListView lv;
         PlayerAdapter adapter;
-        
+       
         private bool mExternalStorageAvailable;
         private bool mExternalStorageWriteable;
 
@@ -64,7 +64,7 @@ namespace SodokuTamir
 
                 MainActivity.list.Add(new Player(PlayerName, duration, Date, StringToBoard(Board)));
             }
-            this.adapter = new PlayerAdapter(this, MainActivity.list);
+            this.adapter = new PlayerAdapter(this, MainActivity.list,"RecordActivity");
             this.lv.Adapter = adapter;
         }
         public SudokuCell[,] StringToBoard(string str)

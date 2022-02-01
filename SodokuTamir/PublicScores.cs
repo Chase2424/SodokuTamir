@@ -16,6 +16,7 @@ namespace SodokuTamir
     {
         ListView lv;
         PlayerAdapter adapter;
+       
         List<Player> listPublic = new List<Player>();
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -36,7 +37,7 @@ namespace SodokuTamir
                 listPublic.Add(decoy[i]);   
             }
            
-            this.adapter = new PlayerAdapter(this, listPublic);
+            this.adapter = new PlayerAdapter(this, listPublic,"PublicScores");
             this.lv.Adapter = adapter;
         }
     }

@@ -38,10 +38,10 @@ namespace SodokuTamir
                .Child(tableName)
                .OnceAsync<JObject>()).Select(item => new Player
                {
-                   name = (string)item.Object.GetValue("name"),
-                   Time = (string)item.Object.Time,
-                   Date = (string)item.Object.Date,
-                   SodokuBoard = (SudokuCell[,])item.Object.SodokuBoard
+                   Name = (string)item.Object.GetValue("Name"),
+                   Time = (string)item.Object.GetValue("Time"),
+                   Date = (string)item.Object.GetValue("Date"),
+                   StrBoard = (string)item.Object.GetValue("StrBoard")
 
                }).ToList();
         }
