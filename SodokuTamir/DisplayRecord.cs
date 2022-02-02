@@ -27,9 +27,19 @@ namespace SodokuTamir
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.RecordBoard);
             // Create your application here
+            if(board!=null)
+                this.board.RemoveAllViews();
             this.board = (RelativeLayout)FindViewById(Resource.Id.Board1);
             int place = Intent.GetIntExtra("Position", 0);
-            cells=MainActivity.list[place].getBoard();
+            if (Intent.GetStringExtra("Type").Equals("private"))
+            {
+                this.cells = MainActivity.list[place].getBoard();
+            }
+            else
+            {
+                PublicScores.listPublic[place].StringToBoard(PublicScores.listPublic[place].GetStrBoard(),this);
+                this.cells = PublicScores.listPublic[place].getBoard();
+            }
             BuildBoard();
         }
        

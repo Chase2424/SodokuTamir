@@ -17,7 +17,7 @@ namespace SodokuTamir
         public string Time;//The time it took for the player to solve the sudoku
         public string Date;//The Date the game took place in
         public SudokuCell[,] SodokuBoard;//The PlayersSodoku
-        public PublicScores _Tone;
+        
         public string StrBoard="";//Board as string, I use it in the public players
 
 
@@ -31,11 +31,15 @@ namespace SodokuTamir
             this.Time = Time;
             this.Date = Date;
             this.StrBoard = board;
-            //this.SodokuBoard = StringToBoard(board, _Tone );
+           
 
 
         }
-        public SudokuCell[,] StringToBoard(string str,Context context)
+        public string GetStrBoard()
+        {
+            return this.StrBoard;
+        }
+        public void StringToBoard(string str,Context context)
         {
 
             SudokuCell[,] arr = new SudokuCell[9, 9];
@@ -48,7 +52,7 @@ namespace SodokuTamir
                     arr[i, j] = new SudokuCell(j * 120, i * 120, (Char)str[i * 9 + j] - '0', 120, 120, context);
                 }
             }
-            return arr;
+            this.SodokuBoard = arr;
         }
         public string BoardToString(SudokuCell[,] arr)
         {

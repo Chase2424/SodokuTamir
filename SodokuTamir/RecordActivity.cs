@@ -44,6 +44,7 @@ namespace SodokuTamir
             Intent i = new Intent(this, typeof(DisplayRecord));
             int pos = e.Position;
             i.PutExtra("Position", pos);
+            i.PutExtra("Type", "Private");
             StartActivity(i);
         }
         public void ReadRecordFiles()

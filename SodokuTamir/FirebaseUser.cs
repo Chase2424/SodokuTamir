@@ -19,20 +19,20 @@ namespace SodokuTamir
     {
         public static FirebaseClient firebase = new FirebaseClient("https://sodokutamir-default-rtdb.firebaseio.com/");
         public static string tableName = "sodokutamir";
-       /* public static async Task<List<Player>> GetAll()
-        {
-            return (await firebase
-                .Child(tableName)
-                .OnceAsync<Player>()).Select(item => new Player
-                {
-                    name = item.Object.name,
-                    Time = item.Object.Time,
-                    Date = item.Object.Date,
-                    SodokuBoard = item.Object.SodokuBoard
+        /* public static async Task<List<Player>> GetAll()
+         {
+             return (await firebase
+                 .Child(tableName)
+                 .OnceAsync<Player>()).Select(item => new Player
+                 {
+                     name = item.Object.name,
+                     Time = item.Object.Time,
+                     Date = item.Object.Date,
+                     SodokuBoard = item.Object.SodokuBoard
 
-                }).ToList();
-        }*/
-       public static async Task<List<Player>> GetAll()
+                 }).ToList();
+         }*/
+        public static async Task<List<Player>> GetAll()
         {
             return (await firebase
                .Child(tableName)
@@ -42,9 +42,11 @@ namespace SodokuTamir
                    Time = (string)item.Object.GetValue("Time"),
                    Date = (string)item.Object.GetValue("Date"),
                    StrBoard = (string)item.Object.GetValue("StrBoard")
+                   
 
                }).ToList();
         }
+        
         public static async Task AddScore(Player player)
         {
 
