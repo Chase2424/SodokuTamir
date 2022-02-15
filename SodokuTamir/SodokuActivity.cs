@@ -47,9 +47,14 @@ namespace SodokuTamir
         private bool mExternalStorageWriteable;
         static bool gameStatus = false;
         String input;
-        MyPhoneReceiver PhoneReceiver;
+        MyPhoneReceiver PhoneReceiver = new MyPhoneReceiver();
         LinearLayout l1;
-
+        protected override void OnResume()
+        {
+            
+            base.OnResume();
+            RegisterReceiver(PhoneReceiver, new IntentFilter(Intent.ActionCall));
+        }
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -65,7 +70,7 @@ namespace SodokuTamir
                 L1.RemoveAllViews();
                 gameStatus = false;
             }*/
-            PhoneReceiver = new MyPhoneReceiver();
+            
             
             _singleTone = this;
             et = (EditText)FindViewById(Resource.Id.EditText);

@@ -12,7 +12,7 @@ using System.Text;
 
 namespace SodokuTamir
 {
-    class MyPhoneStateListener: PhoneStateListener
+    public class MyPhoneStateListener: PhoneStateListener
     {
         public override void OnCallStateChanged(CallState CS, string incomingNumber)
         {
@@ -20,13 +20,13 @@ namespace SodokuTamir
             bool isThereACall=false;
             switch (CS)
             {
-                case CallState.Ringing://כשמתקשרים אליך
+                case CallState.Ringing:
                     Toast.MakeText(Application.Context, "SomeoneIsCalling", ToastLength.Short).Show();
                     break;
-                case CallState.Offhook://כאשר ענית לשיחה 
+                case CallState.Offhook: 
                     Toast.MakeText(Application.Context, "Mid conversation", ToastLength.Short).Show();
                     break;
-                case CallState.Idle://כששיחה הסתיימה או שאין שיחה בכלל
+                case CallState.Idle:
                     Toast.MakeText(Application.Context, "Stopped interaction", ToastLength.Short).Show();
                     break;
             }
