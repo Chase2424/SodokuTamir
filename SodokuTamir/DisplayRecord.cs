@@ -31,7 +31,7 @@ namespace SodokuTamir
                 this.board.RemoveAllViews();
             this.board = (RelativeLayout)FindViewById(Resource.Id.Board1);
             int place = Intent.GetIntExtra("Position", 0);
-            if (Intent.GetStringExtra("Type").Equals("private"))
+            if (Intent.GetStringExtra("Type").Equals("Private"))
             {
                 this.cells = MainActivity.list[place].getBoard();
             }
