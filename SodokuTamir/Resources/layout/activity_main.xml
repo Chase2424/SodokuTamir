@@ -14,7 +14,7 @@
         android:id="@+id/PlayerName"
         android:textColor="#000"/>
     <TextView
-             android:layout_width="300dp"
+             android:layout_width="match_parent"
              android:layout_height="50dp"
             android:text=":רמת הקושי"
             android:textSize="50px"
@@ -91,4 +91,14 @@
         android:text="טבלת שיאים"
         android:id="@+id/Record"
     android:layout_height="50dp"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Start"
+        android:id="@+id/timerstart"/>
+ <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="stop"
+        android:id="@+id/timerstopped"/>
 </LinearLayout>
