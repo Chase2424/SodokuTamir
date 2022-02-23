@@ -12,6 +12,7 @@ using System.Text;
 using Java.IO;
 using System;
 using Android.Icu.Text;
+using System.ServiceProcess;
 //TODO
 // merge cells and getcells
 // add numbers keyboard
@@ -23,6 +24,7 @@ namespace SodokuTamir
     [Activity(Label = "Sodoku")]
     public class SodokuActivity : Activity
     {
+        public static int reductionTime=0;
         static SodokuActivity _singleTone;
         Button Eraser;
         int toolType= 1;//0-eraser,1-pencil,2-pen
@@ -32,8 +34,10 @@ namespace SodokuTamir
         //ISharedPreferences sp;
         static int difficulty;
         static SudokuCell[,] cells;
+        Intent intentTime;
         static DateTime startTime;
         static TimeSpan duration;
+        public static int TimeForGame;
         static RelativeLayout L1;
         static int ButtonHeight = 120, ButtonWidth = 120;
         static SudokuCell[,] GuessCells;
@@ -53,7 +57,7 @@ namespace SodokuTamir
         {
             
             base.OnResume();
-            RegisterReceiver(PhoneReceiver, new IntentFilter(Intent.ActionCall));
+            //RegisterReceiver(PhoneReceiver, new IntentFilter(Intent.ActionCall));
         }
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -70,8 +74,10 @@ namespace SodokuTamir
                 L1.RemoveAllViews();
                 gameStatus = false;
             }*/
-            
-            
+
+            intentTime = new Intent(this, typeof(TimerService));
+            intentTime.PutExtra("type", 2);
+            StartService(intentTime);
             _singleTone = this;
             et = (EditText)FindViewById(Resource.Id.EditText);
             //et.Text="";
@@ -118,8 +124,11 @@ namespace SodokuTamir
 
 
         }
-        
-        
+        public static void pleaseWork(int callTime,int gameTime)
+        {
+            TimeForGame = gameTime + TimeForGame;
+        }
+
         private void Pencil_Click(object sender, EventArgs e)
         {
             this.toolType = 1;
@@ -245,7 +254,15 @@ namespace SodokuTamir
                                 {
                                     Toast.MakeText(this, "Congratulations you have won", ToastLength.Long).Show();
                                     DateTime endtime = Convert.ToDateTime(DateTime.Now.ToString());
-                                    duration = endtime - startTime;
+                                    //ServiceController sc = new ServiceController("intentTime", ".");
+                                    //sc.Stop();
+                                    StopService(intentTime);
+                                   // sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(25));
+                                    TimeSpan time = TimeSpan.FromSeconds(TimeForGame);
+                                    
+                                    //duration = endtime - startTime;
+                                   
+                                    duration = time;
                                     Dialog d = new Dialog(this);
                                     d.SetContentView(Resource.Layout.SaveOutside);
                                     Button privately = (Button)d.FindViewById(Resource.Id.Private);

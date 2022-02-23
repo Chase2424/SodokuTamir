@@ -20,7 +20,7 @@ namespace SodokuTamir
         Button btnStart, btnRecord;
         RadioButton Easy, Medium, Hard;
         EditText PlayerName;
-        Button timerstart, timerstop;
+        
         MediaPlayer mp;
         BroadcastBattery broadCastBattery;
         AudioManager am;
@@ -30,10 +30,7 @@ namespace SodokuTamir
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
-            timerstart = (Button)FindViewById(Resource.Id.timerstart);
-            timerstop = (Button)FindViewById(Resource.Id.timerstopped);
-            timerstart.Click += Timerstart_Click;
-            timerstop.Click += Timerstop_Click;
+            
             mp = MediaPlayer.Create(this, Resource.Raw.Song);
             am = (AudioManager)GetSystemService(Context.AudioService);
             broadCastBattery = new BroadcastBattery(this);
@@ -47,17 +44,7 @@ namespace SodokuTamir
             btnRecord.Click += BtnRecord_Click;
         }
 
-        private void Timerstop_Click(object sender, EventArgs e)
-        {
-            Intent intent = new Intent(this, typeof(TimerService));
-            StopService(intent);
-        }
-
-        private void Timerstart_Click(object sender, EventArgs e)
-        {
-            Intent intent = new Intent(this, typeof(TimerService));
-            StartService(intent);
-        }
+       
 
         public interface IBackButtonListener
         {
