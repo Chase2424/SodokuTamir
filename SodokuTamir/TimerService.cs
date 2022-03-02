@@ -15,7 +15,7 @@ namespace SodokuTamir
     [Service]
     public class TimerService:Service
     {
-        int Callcounter=0, timeCounter=0;
+        public int Callcounter=0, timeCounter=0;
         bool timernotstopped = true;
         int typeofTimer ;//1-call timer, 2- normalTimer
 
@@ -45,7 +45,7 @@ namespace SodokuTamir
             Toast.MakeText(this, "Service Stoped" + Callcounter, ToastLength.Long).Show();
             //SodokuActivity.reductionTime = Callcounter + SodokuActivity.reductionTime;
             SodokuActivity.TimeForGame = timeCounter + SodokuActivity.TimeForGame;
-            SodokuActivity.pleaseWork(Callcounter,timeCounter);
+            //SodokuActivity.pleaseWork(Callcounter,timeCounter);
             Callcounter = 0;
         }
         
@@ -57,7 +57,7 @@ namespace SodokuTamir
 
                 if (typeofTimer == 1)
                     Callcounter++;
-                else if (typeofTimer == 2)
+               // else if (typeofTimer == 2)
                     timeCounter++;
             }
             StopSelf();

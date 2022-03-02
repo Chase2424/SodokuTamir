@@ -70,6 +70,7 @@
     <Compile Include="DisplayRecord.cs" />
     <Compile Include="FirebaseUser.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="MusicService.cs" />
     <Compile Include="MyPhoneReceiver.cs" />
     <Compile Include="MyPhoneStateListener.cs" />
     <Compile Include="Player.cs" />

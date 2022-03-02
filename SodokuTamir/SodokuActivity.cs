@@ -13,6 +13,7 @@ using Java.IO;
 using System;
 using Android.Icu.Text;
 using System.ServiceProcess;
+using System.Threading;
 //TODO
 // merge cells and getcells
 // add numbers keyboard
@@ -29,6 +30,7 @@ namespace SodokuTamir
         Button Eraser;
         int toolType= 1;//0-eraser,1-pencil,2-pen
         Button Pen;
+        Intent backgroundMusic;
         static int lives=3;
         Button Pencil;
         //ISharedPreferences sp;
@@ -124,11 +126,34 @@ namespace SodokuTamir
 
 
         }
-        public static void pleaseWork(int callTime,int gameTime)
-        {
-            TimeForGame = gameTime + TimeForGame;
-        }
 
+        public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Menu.MusicMenu, menu);
+            return true;
+        }
+        public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
+        {
+            base.OnOptionsItemSelected(item);
+            if (item.ItemId == Resource.Id.action_startMusic)
+            {
+               if (item.IsVisible)
+                {
+                    backgroundMusic = new Intent(this, typeof(MusicService));
+                   
+                    StartService(backgroundMusic);
+                }
+            }
+            else if (item.ItemId == Resource.Id.action_stopMusic)
+            {
+                if (item.IsVisible)
+                {
+                    StopService(backgroundMusic);
+                   
+                }
+            }
+            return true;
+        }
         private void Pencil_Click(object sender, EventArgs e)
         {
             this.toolType = 1;
@@ -254,13 +279,12 @@ namespace SodokuTamir
                                 {
                                     Toast.MakeText(this, "Congratulations you have won", ToastLength.Long).Show();
                                     DateTime endtime = Convert.ToDateTime(DateTime.Now.ToString());
-                                    //ServiceController sc = new ServiceController("intentTime", ".");
-                                    //sc.Stop();
+                                    
                                     StopService(intentTime);
-                                   // sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(25));
+                                    
                                     TimeSpan time = TimeSpan.FromSeconds(TimeForGame);
                                     
-                                    //duration = endtime - startTime;
+                                    
                                    
                                     duration = time;
                                     Dialog d = new Dialog(this);
