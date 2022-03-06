@@ -24,6 +24,8 @@ namespace SodokuTamir
         MediaPlayer mp;
         BroadcastBattery broadCastBattery;
         AudioManager am;
+        Intent backgroundMusic;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -70,11 +72,13 @@ namespace SodokuTamir
             base.OnOptionsItemSelected(item);
             if (item.ItemId == Resource.Id.action_startMusic)
             {
-                mp.Start();                      
+                backgroundMusic = new Intent(this, typeof(MusicService));
+
+                StartService(backgroundMusic);
             }
             else if (item.ItemId == Resource.Id.action_stopMusic)
             {
-                mp.Pause();
+                StopService(backgroundMusic);
             }
             return true;
         }

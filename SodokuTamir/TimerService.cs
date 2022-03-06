@@ -57,7 +57,7 @@ namespace SodokuTamir
 
                 if (typeofTimer == 1)
                     Callcounter++;
-               // else if (typeofTimer == 2)
+                else if (typeofTimer == 2)
                     timeCounter++;
             }
             StopSelf();

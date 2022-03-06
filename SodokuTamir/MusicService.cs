@@ -38,11 +38,13 @@ namespace SodokuTamir
         }
         public override void OnDestroy()
         {
+            mp.Looping = false;
             mp.Pause();
         }
         private void PlayMusic()
         {
             mp.Start();
+            mp.Looping = true;
         }
     }
 }
