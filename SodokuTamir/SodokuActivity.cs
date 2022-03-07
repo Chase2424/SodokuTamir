@@ -36,10 +36,10 @@ namespace SodokuTamir
         //ISharedPreferences sp;
         static int difficulty;
         static SudokuCell[,] cells;
-        Intent intentTime;
+        
         static DateTime startTime;
         static TimeSpan duration;
-        public static int TimeForGame;
+        TimerClass timerclass= new TimerClass();
         static RelativeLayout L1;
         static int ButtonHeight = 120, ButtonWidth = 120;
         static SudokuCell[,] GuessCells;
@@ -77,9 +77,9 @@ namespace SodokuTamir
                 gameStatus = false;
             }*/
 
-            intentTime = new Intent(this, typeof(TimerService));
-            intentTime.PutExtra("type", 2);
-            StartService(intentTime);
+            ThreadStart ts = new ThreadStart(timerclass.Run);
+            Thread thread = new Thread(ts);
+            thread.Start();
             _singleTone = this;
             et = (EditText)FindViewById(Resource.Id.EditText);
             //et.Text="";
@@ -279,14 +279,9 @@ namespace SodokuTamir
                                 {
                                     Toast.MakeText(this, "Congratulations you have won", ToastLength.Long).Show();
                                     DateTime endtime = Convert.ToDateTime(DateTime.Now.ToString());
-                                    
-                                    StopService(intentTime);
-                                    
-                                    TimeSpan time = TimeSpan.FromSeconds(TimeForGame);
-                                    
-                                    
-                                   
-                                    duration = time;
+                                    timerclass.setStopped();
+                                    duration = TimeSpan.FromSeconds(timerclass.getTime());
+                                     
                                     Dialog d = new Dialog(this);
                                     d.SetContentView(Resource.Layout.SaveOutside);
                                     Button privately = (Button)d.FindViewById(Resource.Id.Private);

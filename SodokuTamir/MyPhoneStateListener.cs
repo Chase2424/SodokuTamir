@@ -26,7 +26,7 @@ namespace SodokuTamir
             base.OnCallStateChanged(CS, incomingNumber);
            
             bool isThereACall=false;
-           
+           /*
             switch (CS)
             {
                 case CallState.Ringing:
@@ -44,7 +44,7 @@ namespace SodokuTamir
                     break;
             }
 
-
+            */
         }
     }
 }

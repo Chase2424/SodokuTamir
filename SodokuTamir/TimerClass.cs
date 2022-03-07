@@ -18,9 +18,17 @@ namespace SodokuTamir
         bool timernotstopped = true;
         public TimerClass()
         {
-            Run();
+            
         }
-        private void Run()
+        public void setStopped()
+        {
+            timernotstopped = false;
+        }
+        public int getTime()
+        {
+            return timeCounter;
+        }
+        public void Run()
         {
             while (timernotstopped)
             {

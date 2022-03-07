@@ -83,7 +83,6 @@
     <Compile Include="Cube.cs" />
     <Compile Include="SudokuCell.cs" />
     <Compile Include="TimerClass.cs" />
-    <Compile Include="TimerService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

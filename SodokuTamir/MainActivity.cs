@@ -25,6 +25,7 @@ namespace SodokuTamir
         BroadcastBattery broadCastBattery;
         AudioManager am;
         Intent backgroundMusic;
+        Android.Views.IMenu menu;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -64,12 +65,17 @@ namespace SodokuTamir
         }
         public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
         {
-            MenuInflater.Inflate(Resource.Menu.MusicMenu, menu);
+            this.menu = menu;
+            MenuInflater.Inflate(Resource.Menu.MusicMenu, this.menu);
+           
             return true;
         }
         public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
         {
             base.OnOptionsItemSelected(item);
+
+            
+            this.menu.GetItem(0).SetTitle("sssss");
             if (item.ItemId == Resource.Id.action_startMusic)
             {
                 backgroundMusic = new Intent(this, typeof(MusicService));
