@@ -73,9 +73,12 @@ namespace SodokuTamir
         public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
         {
             base.OnOptionsItemSelected(item);
-
-            
-            this.menu.GetItem(0).SetTitle("sssss");
+            //item.SetTitle(123);
+            this.menu.GetItem(0).SetTitle(new Java.Lang.String("hello"));
+            if(this.menu.GetItem(0).TitleFormatted.ToString().Equals("hello"))
+            {
+                this.menu.GetItem(0).SetTitle(new Java.Lang.String("hello2"));
+            }
             if (item.ItemId == Resource.Id.action_startMusic)
             {
                 backgroundMusic = new Intent(this, typeof(MusicService));
