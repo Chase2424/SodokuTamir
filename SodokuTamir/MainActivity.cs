@@ -67,30 +67,39 @@ namespace SodokuTamir
         {
             this.menu = menu;
             MenuInflater.Inflate(Resource.Menu.MusicMenu, this.menu);
-           
+            this.menu.GetItem(1).SetVisible(false);
+            this.menu.GetItem(0).SetVisible(true);
             return true;
         }
         public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
         {
+
             base.OnOptionsItemSelected(item);
-            //item.SetTitle(123);
-            this.menu.GetItem(0).SetTitle(new Java.Lang.String("hello"));
-            if(this.menu.GetItem(0).TitleFormatted.ToString().Equals("hello"))
-            {
-                this.menu.GetItem(0).SetTitle(new Java.Lang.String("hello2"));
-            }
+
+
+
             if (item.ItemId == Resource.Id.action_startMusic)
             {
-                backgroundMusic = new Intent(this, typeof(MusicService));
-
-                StartService(backgroundMusic);
+                if (this.menu.GetItem(0).IsVisible)
+                {
+                    backgroundMusic = new Intent(this, typeof(MusicService));
+                    this.menu.GetItem(0).SetVisible(false);
+                    this.menu.GetItem(1).SetVisible(true);
+                    StartService(backgroundMusic);
+                }
             }
             else if (item.ItemId == Resource.Id.action_stopMusic)
             {
-                StopService(backgroundMusic);
+                if (this.menu.GetItem(1).IsVisible)
+                {
+                    this.menu.GetItem(1).SetVisible(false);
+                    this.menu.GetItem(0).SetVisible(true);
+                    StopService(backgroundMusic);
+                }
             }
             return true;
-        }
+        
+         }
         private void BtnRecord_Click(object sender, System.EventArgs e)
         {
 

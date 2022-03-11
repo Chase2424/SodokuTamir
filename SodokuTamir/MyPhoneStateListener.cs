@@ -14,7 +14,8 @@ namespace SodokuTamir
 {
     public class MyPhoneStateListener: PhoneStateListener
     {
-        Intent intent;
+
+
         Context context;
         public static int countcheck;
         public MyPhoneStateListener(Context context)
@@ -24,27 +25,26 @@ namespace SodokuTamir
         public override void OnCallStateChanged(CallState CS, string incomingNumber)
         {
             base.OnCallStateChanged(CS, incomingNumber);
-           
-            bool isThereACall=false;
-           /*
+
+            bool isThereACall = false;
+
             switch (CS)
             {
                 case CallState.Ringing:
-                    
+
                     break;
                 case CallState.Offhook:
                     Toast.MakeText(Application.Context, "Mid conversation", ToastLength.Short).Show();
-                    intent = new Intent(context, typeof(TimerService));
-                    context.StartService(intent);
-                    
+                    SodokuActivity.timerclass.SomeoneIsCalling();
+
+
                     break;
                 case CallState.Idle:
                     Toast.MakeText(Application.Context, "Stopped interaction", ToastLength.Short).Show();
-                    context.StopService(intent);
+                    SodokuActivity.timerclass.CallFinish();
                     break;
             }
 
-            */
         }
     }
 }

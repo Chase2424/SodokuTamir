@@ -14,11 +14,21 @@ namespace SodokuTamir
 {
     public class TimerClass
     {
+        bool InACall = false;
         public int timeCounter = 0;
         bool timernotstopped = true;
         public TimerClass()
         {
-            
+
+        }
+        public void SomeoneIsCalling()
+        {
+            InACall = true;
+
+        }
+        public void CallFinish()
+        {
+            InACall = false;
         }
         public void setStopped()
         {
@@ -32,10 +42,13 @@ namespace SodokuTamir
         {
             while (timernotstopped)
             {
-                Thread.Sleep(1000);
-                timeCounter++;
+                if (InACall != true)
+                {
+                    Thread.Sleep(1000);
+                    timeCounter++;
+                }
             }
-            
+
         }
     }
 }

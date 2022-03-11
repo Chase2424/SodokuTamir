@@ -25,21 +25,21 @@ namespace SodokuTamir
     [Activity(Label = "Sodoku")]
     public class SodokuActivity : Activity
     {
-        public static int reductionTime=0;
+        public static int reductionTime = 0;
         static SodokuActivity _singleTone;
         Button Eraser;
-        int toolType= 1;//0-eraser,1-pencil,2-pen
+        int toolType = 1;//0-eraser,1-pencil,2-pen
         Button Pen;
         Intent backgroundMusic;
-        static int lives=3;
+        static int lives = 3;
         Button Pencil;
         //ISharedPreferences sp;
         static int difficulty;
         static SudokuCell[,] cells;
-        
+
         static DateTime startTime;
         static TimeSpan duration;
-        TimerClass timerclass= new TimerClass();
+        public static TimerClass timerclass = new TimerClass();
         static RelativeLayout L1;
         static int ButtonHeight = 120, ButtonWidth = 120;
         static SudokuCell[,] GuessCells;
@@ -57,15 +57,15 @@ namespace SodokuTamir
         LinearLayout l1;
         protected override void OnResume()
         {
-            
+
             base.OnResume();
             //RegisterReceiver(PhoneReceiver, new IntentFilter(Intent.ActionCall));
         }
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-           
-            
+
+
             SetContentView(Resource.Layout.SodokuLayout);
             // Create your application here
             finishedGenerating = false;
@@ -87,7 +87,7 @@ namespace SodokuTamir
             L1 = (RelativeLayout)FindViewById(Resource.Id.Board);
 
             startTime = Convert.ToDateTime(DateTime.Now.ToString());
-            
+
             cells = new SudokuCell[9, 9];
             Eraser = (Button)FindViewById(Resource.Id.Eraser);
             Pen = (Button)FindViewById(Resource.Id.Pen);
@@ -96,14 +96,14 @@ namespace SodokuTamir
             Pen.Click += Pen_Click;
             Pencil.Click += Pencil_Click;
             setPermissions();
-            
+
             for (int i = 0; i < 9; i++)
             {
 
                 for (int j = 0; j < 9; j++)
                 {
-                    cells[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight,0, ButtonHeight, ButtonWidth, this);
-                   
+                    cells[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight, 0, ButtonHeight, ButtonWidth, this);
+
                 }
             }
             //Console.WriteLine("Hello World!");
@@ -122,37 +122,9 @@ namespace SodokuTamir
 
             //  print_arr(board,0,0);
 
-            
 
 
-        }
 
-        public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
-        {
-            MenuInflater.Inflate(Resource.Menu.MusicMenu, menu);
-            return true;
-        }
-        public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
-        {
-            base.OnOptionsItemSelected(item);
-            if (item.ItemId == Resource.Id.action_startMusic)
-            {
-               if (item.IsVisible)
-                {
-                    backgroundMusic = new Intent(this, typeof(MusicService));
-                   
-                    StartService(backgroundMusic);
-                }
-            }
-            else if (item.ItemId == Resource.Id.action_stopMusic)
-            {
-                if (item.IsVisible)
-                {
-                    StopService(backgroundMusic);
-                   
-                }
-            }
-            return true;
         }
         private void Pencil_Click(object sender, EventArgs e)
         {
@@ -172,10 +144,10 @@ namespace SodokuTamir
         //פונקציה המעבירה את ערכי הלוח למחרוזת אחת
         public static string BoardToString(SudokuCell[,] arr)
         {
-            string Str="";
-            for(int i =0;i<9;i++)
+            string Str = "";
+            for (int i = 0; i < 9; i++)
             {
-                for(int j=0;j<9;j++)
+                for (int j = 0; j < 9; j++)
                 {
                     Str = Str + arr[i, j].getValue();
                 }
@@ -185,7 +157,9 @@ namespace SodokuTamir
         public void SaveBoard()
         {
             string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
+
             string game_folder = root + "/saved_sodokus";
+            Toast.MakeText(this, game_folder, ToastLength.Long).Show();
             int fCount = Directory.GetFiles(game_folder, "*", SearchOption.TopDirectoryOnly).Length;
             if ((int)fCount > 50)
             {
@@ -196,23 +170,23 @@ namespace SodokuTamir
             ISharedPreferences sp = PreferenceManager.GetDefaultSharedPreferences(context);
             string PlayerName = Intent.GetStringExtra("PlayerName");
             var editor = sp.Edit();
-            
+
             editor.PutInt("Number", sp.GetInt("Number", 0) + 1);
             String Sname = "Sodoku-" + sp.GetInt("Number", 0) + ".txt";
             editor.Commit();
-            
+
             Java.IO.File myDir = new Java.IO.File(game_folder);
-            myDir.Mkdir(); 
-            
+            myDir.Mkdir();
+
             Java.IO.File file = new Java.IO.File(myDir, Sname);
             if (file.Exists())
                 file.Delete();
-            
-            
+
+
             string filename = Path.Combine(game_folder, Sname);
             FileStream fs = new FileStream(filename, FileMode.Create);
 
-            byte[] bytes = Encoding.UTF8.GetBytes(PlayerName+","+duration + ","+startTime+"," + BoardToString(cells));
+            byte[] bytes = Encoding.UTF8.GetBytes(PlayerName + "," + duration + "," + startTime + "," + BoardToString(cells));
 
             fs.Write(bytes, 0, bytes.Length);
             fs.Flush();/*
@@ -234,14 +208,14 @@ namespace SodokuTamir
             Button button = sender as Button;
             int btnTag = (int)button.Tag;
             //התיוג של הכפתור משמש לדעת האם המשבצת נרשמה על ידי המשתמש או על ידינו
-            if (et!=null && et.Text!=null && btnTag!=2 )
+            if (et != null && et.Text != null && btnTag != 2)
             {
                 //בדיקת סוג הכלי אשר הוא מנסה לשנות איתו
                 if (toolType == 0)
                 {
                     button.Hint = "";
                 }
-                else if(toolType == 1)
+                else if (toolType == 1)
                 {
                     button.Hint = et.Text;
                 }
@@ -250,7 +224,7 @@ namespace SodokuTamir
                     try
                     {
                         int input = Int32.Parse(et.Text);
-                        if(input >0 && input<10)
+                        if (input > 0 && input < 10)
                         {
                             button.Text = et.Text;
                             int[,] arr = new int[9, 9];
@@ -263,25 +237,25 @@ namespace SodokuTamir
                                 {
                                     L1.RemoveAllViewsInLayout();
                                     Toast.MakeText(this, "GAME-OVER", ToastLength.Long).Show();
-                                    
+
                                     Intent i = new Intent(this, typeof(MainActivity));
                                     StartActivity(i);
                                 }
                                 else
                                 {
-                                    Toast.MakeText(this, "You have:"+lives+"lives left", ToastLength.Long).Show();
+                                    Toast.MakeText(this, "You have:" + lives + "lives left", ToastLength.Long).Show();
                                 }
-                                
+
                             }
                             else
                             {
-                               if( !BoardToString(GuessCells).Contains('0'))
+                                if (!BoardToString(GuessCells).Contains('0'))
                                 {
                                     Toast.MakeText(this, "Congratulations you have won", ToastLength.Long).Show();
                                     DateTime endtime = Convert.ToDateTime(DateTime.Now.ToString());
                                     timerclass.setStopped();
                                     duration = TimeSpan.FromSeconds(timerclass.getTime());
-                                     
+
                                     Dialog d = new Dialog(this);
                                     d.SetContentView(Resource.Layout.SaveOutside);
                                     Button privately = (Button)d.FindViewById(Resource.Id.Private);
@@ -289,7 +263,7 @@ namespace SodokuTamir
                                     d.Show();
                                     privately.Click += Privately_Click;
                                     publicly.Click += Publicly_Click;
-                                    
+
 
                                 }
                             }
@@ -298,8 +272,8 @@ namespace SodokuTamir
                     }
                     catch
                     {
-                        Toast.MakeText(this, "please enter numbers only", ToastLength.Long).Show() ;
-                        
+                        Toast.MakeText(this, "please enter numbers only", ToastLength.Long).Show();
+
 
                     }
                 }
@@ -310,13 +284,13 @@ namespace SodokuTamir
         {
             //doFireWallStuff
             string PlayerName = Intent.GetStringExtra("PlayerName");
-            Player p = new Player(PlayerName, ""+duration, ""+startTime, BoardToString(cells));
+            Player p = new Player(PlayerName, "" + duration, "" + startTime, BoardToString(cells));
             await FirebaseUser.AddScore(p);
             Intent i = new Intent(this, typeof(MainActivity));
             StartActivity(i);
         }
 
-        private void  Privately_Click(object sender, EventArgs e)
+        private void Privately_Click(object sender, EventArgs e)
         {
             SaveBoard();
             Intent i = new Intent(this, typeof(MainActivity));
@@ -326,7 +300,7 @@ namespace SodokuTamir
         public void NumberEntry()
         {
             var editor = shared.Edit();
-            editor.PutString("Board",BoardToString(GuessCells));
+            editor.PutString("Board", BoardToString(GuessCells));
             editor.Commit();
         }
 
@@ -343,7 +317,7 @@ namespace SodokuTamir
             if (difficulty == 1)
             {
                 int i = 0;
-                while(i< 3)
+                while (i < 3)
                 {
                     int number = rnd.Next(0, 81);
                     if (board[number] != '0')
@@ -403,11 +377,11 @@ namespace SodokuTamir
                 Intent i = new Intent(this, typeof(MainActivity));
                 StartActivity(i);
             }
-            
+
             strBoard = new string(board);
-            SudokuCell[,]arr2 = new SudokuCell[9, 9];
+            SudokuCell[,] arr2 = new SudokuCell[9, 9];
             arr2 = StringToBoard(strBoard);
-            
+
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
@@ -415,7 +389,7 @@ namespace SodokuTamir
                     Current[i, j].setValue(arr2[i, j].getValue());
                 }
             }
-            
+
             return Current;
         }
         public int[,] getBoard(SudokuCell[,] suduko)
@@ -424,31 +398,31 @@ namespace SodokuTamir
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
-                { 
+                {
                     arr[i, j] = suduko[i, j].getValue();
                 }
             }
 
-           return arr;
+            return arr;
         }//הופך את המערך של מחלקה למערך של מספרים שלמים
         public SudokuCell[,] StringToBoard(string str)
         {
-            
-            SudokuCell[,] arr = new SudokuCell[9,9];
-            
+
+            SudokuCell[,] arr = new SudokuCell[9, 9];
+
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                  
-                     arr[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight, (Char)str[i * 9 + j]-'0', ButtonHeight, ButtonWidth, this);
+
+                    arr[i, j] = new SudokuCell(j * ButtonWidth, i * ButtonHeight, (Char)str[i * 9 + j] - '0', ButtonHeight, ButtonWidth, this);
                 }
             }
             return arr;
         }
         public static void ShowBoard()
         {
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(GuessCells[0,0].getWidth(), GuessCells[0,0].getLength());
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(GuessCells[0, 0].getWidth(), GuessCells[0, 0].getLength());
             L1.RemoveAllViews();
             gameStatus = true;
             for (int i = 0; i < 9; i++)
@@ -460,7 +434,7 @@ namespace SodokuTamir
                     {
                         if (j % 3 == 0 & j != 0)
                         {
-                            layoutParams.SetMargins(GuessCells[i, j].getX()-10, GuessCells[i, j].getY(), 0, 0);
+                            layoutParams.SetMargins(GuessCells[i, j].getX() - 10, GuessCells[i, j].getY(), 0, 0);
                             TextView tv = new TextView(_singleTone);
                             tv.Text = "|";
                             tv.LayoutParameters = layoutParams;
@@ -474,15 +448,15 @@ namespace SodokuTamir
                     {
                         L1.AddView(GuessCells[i, j].getEmptyButton());
                     }
-                    
+
                 }
-                if (i % 3 == 0&i!=0)
+                if (i % 3 == 0 & i != 0)
                 {
-                    LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(GuessCells[0, 0].getWidth() , 200);
-                    for (int k = 0;k<9;k++)
+                    LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(GuessCells[0, 0].getWidth(), 200);
+                    for (int k = 0; k < 9; k++)
                     {
                         TextView tv2 = new TextView(_singleTone);
-                        layoutParams2.SetMargins(GuessCells[0, 0].getLength() * k, GuessCells[0, 0].getLength() * i-75 , 0, 0);
+                        layoutParams2.SetMargins(GuessCells[0, 0].getLength() * k, GuessCells[0, 0].getLength() * i - 75, 0, 0);
                         tv2.Text = "_";
                         tv2.LayoutParameters = layoutParams2;
                         tv2.TextSize = 30;
@@ -497,10 +471,10 @@ namespace SodokuTamir
             int number = rnd.Next(0, end);
             return number;
         }
-        
+
         public static bool generate_array(int[,] arr1, int x, int y, int[] allow_to_use1)
         {
-           
+
             //הפונקציה לא עבדה כאשר עבדנו על אוותו מערך בלי לשכפל אותו
             int[,] arr = arr1.Clone() as int[,];
 
@@ -575,8 +549,8 @@ namespace SodokuTamir
                     {
                         x++;
                     }
-                    if(!finishedGenerating)
-                         generate_array(arr, x, y, allow_to_use);
+                    if (!finishedGenerating)
+                        generate_array(arr, x, y, allow_to_use);
                 }
 
             }
@@ -585,7 +559,7 @@ namespace SodokuTamir
             return true;
         }
 
-        public void BoardReady(int[,]board)
+        public void BoardReady(int[,] board)
         {
             for (int k = 0; k < 9; k++)
             {
@@ -609,7 +583,7 @@ namespace SodokuTamir
                 }
             }
             ShowBoard();
-            
+
 
             //_singleTone.on_board_ready(arr);
         }
@@ -676,7 +650,7 @@ namespace SodokuTamir
                 return false;
         }
 
-       
+
         public static bool check_sub_arr(int[,] arr, int start_pos_x, int start_pos_y)
         {
 
@@ -722,7 +696,7 @@ namespace SodokuTamir
 
 
 
-        
+
 
         public void setPermissions()
         {
@@ -731,7 +705,7 @@ namespace SodokuTamir
             {
                 //we can read and write the media
                 mExternalStorageAvailable = mExternalStorageWriteable = true;
-                //Toast.MakeText(this, "we can read and write the media", ToastLength.Long).Show();
+                Toast.MakeText(this, "we can read and write the media", ToastLength.Long).Show();
             }
             else if (Android.OS.Environment.MediaMountedReadOnly.Equals(state))
             {
