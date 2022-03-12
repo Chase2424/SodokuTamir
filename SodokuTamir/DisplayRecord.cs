@@ -20,38 +20,56 @@ namespace SodokuTamir
         int ButtonHeight = 120, ButtonWidth = 120;
         SudokuCell[,] cells;
         RelativeLayout board;
-        
+        bool first_time = true;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.RecordBoard);
             // Create your application here
-            if(board!=null)
-                this.board.RemoveAllViews();
+
+
             this.board = (RelativeLayout)FindViewById(Resource.Id.Board1);
+           
             int place = Intent.GetIntExtra("Position", 0);
+            this.cells  = new SudokuCell[9, 9];
             if (Intent.GetStringExtra("Type").Equals("Private"))
             {
                 this.cells = MainActivity.list[place].getBoard();
             }
             else
+
             {
                 PublicScores.listPublic[place].StringToBoard(PublicScores.listPublic[place].GetStrBoard(),this);
                 this.cells = PublicScores.listPublic[place].getBoard();
             }
             BuildBoard();
         }
-       
-       
-        
-       
-        public void BuildBoard()
+
+
+        protected override void OnDestroy()
         {
-            
-            try
+            base.OnDestroy();
+            for (int i = 0; i < 9; i++)
             {
 
+                for (int j = 0; j < 9; j++)
+                {
+
+
+                    board.RemoveView(this.cells[i, j].getButton());
+                }
+            }
+
+        }
+
+            public void BuildBoard()
+        {
+           
+
+                try
+                {
+                this.board.RemoveAllViews();
 
 
                 for (int i = 0; i < 9; i++)
@@ -59,7 +77,7 @@ namespace SodokuTamir
 
                     for (int j = 0; j < 9; j++)
                     {
-                        
+                       
 
                         board.AddView(this.cells[i, j].getButton());
                         //
@@ -72,8 +90,8 @@ namespace SodokuTamir
             catch(Exception e)
             {
                 
-                this.cells = new SudokuCell[9, 9];
-
+               this.cells = new SudokuCell[9, 9];
+                
                 for (int i = 0; i < 9; i++)
                 {
 

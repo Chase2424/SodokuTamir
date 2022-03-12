@@ -14,6 +14,7 @@ using System;
 using Android.Icu.Text;
 using System.ServiceProcess;
 using System.Threading;
+using System.Collections;
 //TODO
 // merge cells and getcells
 // add numbers keyboard
@@ -27,6 +28,9 @@ namespace SodokuTamir
     {
         public static int reductionTime = 0;
         static SodokuActivity _singleTone;
+
+        static ArrayList buttons_to_remove = new ArrayList();
+        
         Button Eraser;
         int toolType = 1;//0-eraser,1-pencil,2-pen
         Button Pen;
@@ -45,6 +49,7 @@ namespace SodokuTamir
         static SudokuCell[,] GuessCells;
         static List<int[,]> Solutions;
         static int result_num = 0;
+        Android.Views.IMenu menu;
         ISharedPreferences shared;
         static int guess;
         static bool finishedGenerating = false;
@@ -61,12 +66,18 @@ namespace SodokuTamir
             base.OnResume();
             //RegisterReceiver(PhoneReceiver, new IntentFilter(Intent.ActionCall));
         }
+
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
 
+
+
+
             SetContentView(Resource.Layout.SodokuLayout);
+           
             // Create your application here
             finishedGenerating = false;
             /*
@@ -126,6 +137,7 @@ namespace SodokuTamir
 
 
         }
+      
         private void Pencil_Click(object sender, EventArgs e)
         {
             this.toolType = 1;
@@ -304,6 +316,15 @@ namespace SodokuTamir
             editor.Commit();
         }
 
+        public static void clear_old_board()
+        {
+           foreach(Button _b in buttons_to_remove)
+            {
+                L1.RemoveView(_b);
+            }
+            buttons_to_remove.Clear();
+        }
+
         public SudokuCell[,] CreateClues(SudokuCell[,] Original)
         {
             Random rnd = new Random();
@@ -382,6 +403,8 @@ namespace SodokuTamir
             SudokuCell[,] arr2 = new SudokuCell[9, 9];
             arr2 = StringToBoard(strBoard);
 
+            return arr2;
+            /*
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
@@ -391,6 +414,7 @@ namespace SodokuTamir
             }
 
             return Current;
+            */
         }
         public int[,] getBoard(SudokuCell[,] suduko)
         {
@@ -424,6 +448,7 @@ namespace SodokuTamir
         {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(GuessCells[0, 0].getWidth(), GuessCells[0, 0].getLength());
             L1.RemoveAllViews();
+            clear_old_board();
             gameStatus = true;
             for (int i = 0; i < 9; i++)
             {
@@ -441,12 +466,16 @@ namespace SodokuTamir
                             tv.TextSize = 20;
                             L1.AddView(tv);
                         }
-                        L1.AddView(GuessCells[i, j].getButton());
+                        Button b = GuessCells[i, j].getButton();
+                        buttons_to_remove.Add(b);
+                        L1.AddView(b);
 
                     }
                     else
                     {
-                        L1.AddView(GuessCells[i, j].getEmptyButton());
+                        Button b = GuessCells[i, j].getEmptyButton();
+                        buttons_to_remove.Add(b);
+                        L1.AddView(b);
                     }
 
                 }

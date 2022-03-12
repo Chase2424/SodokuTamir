@@ -12,7 +12,7 @@ using System.Collections.Generic;
 namespace SodokuTamir
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
-    public class MainActivity : AppCompatActivity
+    public class MainActivity : AppCompatActivity 
     {
         PlayerAdapter adapter;
        
@@ -63,6 +63,7 @@ namespace SodokuTamir
             UnregisterReceiver(broadCastBattery);
             base.OnPause();
         }
+
         public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
         {
             this.menu = menu;
