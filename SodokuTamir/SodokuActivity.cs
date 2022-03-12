@@ -40,7 +40,7 @@ namespace SodokuTamir
         //ISharedPreferences sp;
         static int difficulty;
         static SudokuCell[,] cells;
-
+        Button musicStart, musicStop;
         static DateTime startTime;
         static TimeSpan duration;
         public static TimerClass timerclass = new TimerClass();
@@ -87,7 +87,9 @@ namespace SodokuTamir
                 L1.RemoveAllViews();
                 gameStatus = false;
             }*/
-
+            musicStart = (Button)FindViewById(Resource.Id.startMusic);
+            musicStop = (Button)FindViewById(Resource.Id.stopMusic);
+            musicStop.Visibility = ViewStates.Invisible;
             ThreadStart ts = new ThreadStart(timerclass.Run);
             Thread thread = new Thread(ts);
             thread.Start();
@@ -96,9 +98,9 @@ namespace SodokuTamir
             //et.Text="";
             L1 = null;
             L1 = (RelativeLayout)FindViewById(Resource.Id.Board);
-
+            backgroundMusic = new Intent(this, typeof(MusicService));
             startTime = Convert.ToDateTime(DateTime.Now.ToString());
-
+            StopService(backgroundMusic);
             cells = new SudokuCell[9, 9];
             Eraser = (Button)FindViewById(Resource.Id.Eraser);
             Pen = (Button)FindViewById(Resource.Id.Pen);
@@ -107,7 +109,8 @@ namespace SodokuTamir
             Pen.Click += Pen_Click;
             Pencil.Click += Pencil_Click;
             setPermissions();
-
+            musicStart.Click += MusicStart_Click;
+            musicStop.Click += MusicStop_Click;
             for (int i = 0; i < 9; i++)
             {
 
@@ -137,7 +140,22 @@ namespace SodokuTamir
 
 
         }
-      
+
+        private void MusicStop_Click(object sender, EventArgs e)
+        {
+            StopService(backgroundMusic);
+            musicStop.Visibility = ViewStates.Invisible;
+            musicStart.Visibility = ViewStates.Visible;
+        }
+
+        private void MusicStart_Click(object sender, EventArgs e)
+        {
+
+            StartService(backgroundMusic);
+            musicStart.Visibility = ViewStates.Invisible;
+            musicStop.Visibility = ViewStates.Visible;
+        }
+
         private void Pencil_Click(object sender, EventArgs e)
         {
             this.toolType = 1;
@@ -171,7 +189,7 @@ namespace SodokuTamir
             string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
 
             string game_folder = root + "/saved_sodokus";
-            Toast.MakeText(this, game_folder, ToastLength.Long).Show();
+            //Toast.MakeText(this, game_folder, ToastLength.Long).Show();
             int fCount = Directory.GetFiles(game_folder, "*", SearchOption.TopDirectoryOnly).Length;
             if ((int)fCount > 50)
             {
@@ -734,7 +752,7 @@ namespace SodokuTamir
             {
                 //we can read and write the media
                 mExternalStorageAvailable = mExternalStorageWriteable = true;
-                Toast.MakeText(this, "we can read and write the media", ToastLength.Long).Show();
+                //Toast.MakeText(this, "we can read and write the media", ToastLength.Long).Show();
             }
             else if (Android.OS.Environment.MediaMountedReadOnly.Equals(state))
             {

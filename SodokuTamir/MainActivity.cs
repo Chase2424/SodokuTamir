@@ -33,7 +33,7 @@ namespace SodokuTamir
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
-            
+            backgroundMusic = new Intent(this, typeof(MusicService));
             mp = MediaPlayer.Create(this, Resource.Raw.Song);
             am = (AudioManager)GetSystemService(Context.AudioService);
             broadCastBattery = new BroadcastBattery(this);
@@ -83,7 +83,7 @@ namespace SodokuTamir
             {
                 if (this.menu.GetItem(0).IsVisible)
                 {
-                    backgroundMusic = new Intent(this, typeof(MusicService));
+                    
                     this.menu.GetItem(0).SetVisible(false);
                     this.menu.GetItem(1).SetVisible(true);
                     StartService(backgroundMusic);
@@ -149,7 +149,10 @@ namespace SodokuTamir
                 {
                     intent.PutExtra("difficulty", 1);
                 }
-                intent.PutExtra("PlayerName",PlayerName.Text);
+                intent.PutExtra("PlayerName", PlayerName.Text);
+                this.menu.GetItem(1).SetVisible(false);
+                this.menu.GetItem(0).SetVisible(true);
+                StopService(backgroundMusic);
                 StartActivity(intent);
             }
             else
