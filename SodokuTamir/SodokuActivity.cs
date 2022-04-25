@@ -15,6 +15,7 @@ using Android.Icu.Text;
 using System.ServiceProcess;
 using System.Threading;
 using System.Collections;
+using AndroidX.AppCompat.App;
 //TODO
 // merge cells and getcells
 // add numbers keyboard
@@ -23,14 +24,14 @@ using System.Collections;
 // add clean file button
 namespace SodokuTamir
 {
-    [Activity(Label = "Sodoku")]
-    public class SodokuActivity : Activity
+    [Activity(Label = "Sodoku",  Theme = "@style/AppTheme")]
+    public class SodokuActivity : AppCompatActivity
     {
         public static int reductionTime = 0;
         static SodokuActivity _singleTone;
 
         static ArrayList buttons_to_remove = new ArrayList();
-        
+        Android.Views.IMenu menu;
         Button Eraser;
         int toolType = 1;//0-eraser,1-pencil,2-pen
         Button Pen;
@@ -40,7 +41,6 @@ namespace SodokuTamir
         //ISharedPreferences sp;
         static int difficulty;
         static SudokuCell[,] cells;
-        Button musicStart, musicStop;
         static DateTime startTime;
         static TimeSpan duration;
         public static TimerClass timerclass = new TimerClass();
@@ -49,7 +49,7 @@ namespace SodokuTamir
         static SudokuCell[,] GuessCells;
         static List<int[,]> Solutions;
         static int result_num = 0;
-        Android.Views.IMenu menu;
+       
         ISharedPreferences shared;
         static int guess;
         static bool finishedGenerating = false;
@@ -67,17 +67,54 @@ namespace SodokuTamir
             //RegisterReceiver(PhoneReceiver, new IntentFilter(Intent.ActionCall));
         }
 
+        public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
+        {
+            this.menu = menu;
+            MenuInflater.Inflate(Resource.Menu.MusicMenu, this.menu);
+            this.menu.GetItem(2).SetVisible(false);
+            if (MainActivity.SP.GetBoolean("IsMusicOn", false) == false)
+            {
+                this.menu.GetItem(0).SetVisible(true);
+                this.menu.GetItem(1).SetVisible(false);
+            }
+            else if (MainActivity.SP.GetBoolean("IsMusicOn", false) == true)
+            {
+                this.menu.GetItem(0).SetVisible(false);
+                this.menu.GetItem(1).SetVisible(true);
 
+            }
+            return true;
+        }
+        public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
+        {
+            base.OnOptionsItemSelected(item);
+            if (MainActivity.SP.GetBoolean("IsMusicOn", false) == false)
+            {
+                var editor = MainActivity.SP.Edit();
+                editor.PutBoolean("IsMusicOn", true);
+                editor.Commit();
+                this.menu.GetItem(0).SetVisible(false);
+                this.menu.GetItem(1).SetVisible(true);
+                StartService(MainActivity.backgroundMusic);
+
+            }
+            else
+            {
+                var editor = MainActivity.SP.Edit();
+                editor.PutBoolean("IsMusicOn", false);
+                StopService(MainActivity.backgroundMusic);
+                editor.Commit();
+                this.menu.GetItem(0).SetVisible(true);
+                this.menu.GetItem(1).SetVisible(false);
+            }
+            return true;
+
+        }
+        
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-
-
-
-
-            SetContentView(Resource.Layout.SodokuLayout);
-           
+            SetContentView(Resource.Layout.SodokuLayout);           
             // Create your application here
             finishedGenerating = false;
             /*
@@ -87,9 +124,7 @@ namespace SodokuTamir
                 L1.RemoveAllViews();
                 gameStatus = false;
             }*/
-            musicStart = (Button)FindViewById(Resource.Id.startMusic);
-            musicStop = (Button)FindViewById(Resource.Id.stopMusic);
-            musicStop.Visibility = ViewStates.Invisible;
+            
             ThreadStart ts = new ThreadStart(timerclass.Run);
             Thread thread = new Thread(ts);
             thread.Start();
@@ -98,9 +133,9 @@ namespace SodokuTamir
             //et.Text="";
             L1 = null;
             L1 = (RelativeLayout)FindViewById(Resource.Id.Board);
-            backgroundMusic = new Intent(this, typeof(MusicService));
+            
             startTime = Convert.ToDateTime(DateTime.Now.ToString());
-            StopService(backgroundMusic);
+            
             cells = new SudokuCell[9, 9];
             Eraser = (Button)FindViewById(Resource.Id.Eraser);
             Pen = (Button)FindViewById(Resource.Id.Pen);
@@ -109,8 +144,7 @@ namespace SodokuTamir
             Pen.Click += Pen_Click;
             Pencil.Click += Pencil_Click;
             setPermissions();
-            musicStart.Click += MusicStart_Click;
-            musicStop.Click += MusicStop_Click;
+            
             for (int i = 0; i < 9; i++)
             {
 
@@ -141,20 +175,7 @@ namespace SodokuTamir
 
         }
 
-        private void MusicStop_Click(object sender, EventArgs e)
-        {
-            StopService(backgroundMusic);
-            musicStop.Visibility = ViewStates.Invisible;
-            musicStart.Visibility = ViewStates.Visible;
-        }
-
-        private void MusicStart_Click(object sender, EventArgs e)
-        {
-
-            StartService(backgroundMusic);
-            musicStart.Visibility = ViewStates.Invisible;
-            musicStop.Visibility = ViewStates.Visible;
-        }
+       
 
         private void Pencil_Click(object sender, EventArgs e)
         {

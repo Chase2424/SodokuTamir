@@ -13,7 +13,13 @@
 	android:title="StopMusic"
 	android:orderInCategory="200"
 	android:showAsAction="never"/>
-  
+	<item
+		android:id="@+id/MusicFile"
+	android:title="SelectMusic"
+	android:orderInCategory="300"
+	android:showAsAction="never"/>
+		
+	 
 </menu>
 
 <!-- Code to implement into Activity:

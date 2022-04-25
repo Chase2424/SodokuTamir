@@ -139,13 +139,10 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\Eraser.jpg" />
+    <AndroidResource Include="Resources\drawable\eraser.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\Pen.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\SodokuBoard.png" />
+    <AndroidResource Include="Resources\drawable\pen.jpg" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\pencil.png" />

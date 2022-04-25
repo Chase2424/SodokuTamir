@@ -1,9 +1,11 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.OS;
+using Android.Preferences;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using AndroidX.AppCompat.App;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,13 +15,14 @@ using System.Text;
 namespace SodokuTamir
 {
     [Activity(Label = "RecordActivity")]
-    public class RecordActivity : Activity
+    public class RecordActivity : AppCompatActivity
     {
         ListView lv;
-        PlayerAdapter adapter;
-       
+        PlayerAdapter adapter;        
         private bool mExternalStorageAvailable;
         private bool mExternalStorageWriteable;
+        Android.Views.IMenu menu;
+
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -27,8 +30,6 @@ namespace SodokuTamir
             SetContentView(Resource.Layout.Recordlayout);
             // Create your application here
             setPermissitios();
-            
-
             this.lv = (ListView)FindViewById(Resource.Id.Lview);
 
             //MainActivity.list.Add(new Player("Guy1", 200, "4th july 2020"));
@@ -38,7 +39,50 @@ namespace SodokuTamir
             ReadRecordFiles();
             lv.ItemClick += Lv_ItemClick;
         }
+        
+        public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
+        {
+           this.menu = menu;
+            MenuInflater.Inflate(Resource.Menu.MusicMenu, this.menu);
+            this.menu.GetItem(2).SetVisible(false);
+            if (MainActivity.SP.GetBoolean("IsMusicOn", false) == false)
+            {
+                this.menu.GetItem(0).SetVisible(true);
+                this.menu.GetItem(1).SetVisible(false);
+            }
+            else if (MainActivity.SP.GetBoolean("IsMusicOn", false) == true)
+            {
+                this.menu.GetItem(0).SetVisible(false);
+                this.menu.GetItem(1).SetVisible(true);
+                
+            }
+            return true;
+        }
+        public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
+        {
+            base.OnOptionsItemSelected(item);
+            if (MainActivity.SP.GetBoolean("IsMusicOn", false) == false)
+            {
+                var editor = MainActivity.SP.Edit();
+                editor.PutBoolean("IsMusicOn", true);
+                editor.Commit();
+                this.menu.GetItem(0).SetVisible(false);
+                this.menu.GetItem(1).SetVisible(true);
+                StartService(MainActivity.backgroundMusic);
 
+            }
+            else
+            {
+                var editor = MainActivity.SP.Edit();
+                editor.PutBoolean("IsMusicOn", false);
+                StopService(MainActivity.backgroundMusic);
+                editor.Commit();
+                this.menu.GetItem(0).SetVisible(true);
+                this.menu.GetItem(1).SetVisible(false);
+            }
+            return true;
+
+        }
         private void Lv_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
             Intent i = new Intent(this, typeof(DisplayRecord));
@@ -59,10 +103,6 @@ namespace SodokuTamir
                 string duration = text.Split(",")[1];
                 string Date = text.Split(",")[2];
                 string Board = text.Split(",")[3];
-
-
-
-
                 MainActivity.list.Add(new Player(PlayerName, duration, Date, StringToBoard(Board)));
             }
             this.adapter = new PlayerAdapter(this, MainActivity.list,"RecordActivity");
@@ -77,7 +117,6 @@ namespace SodokuTamir
             {
                 for (int j = 0; j < 9; j++)
                 {
-
                     arr[i, j] = new SudokuCell(j * 120, i * 120, (Char)str[i * 9 + j] - '0', 120, 120, this);
                 }
             }

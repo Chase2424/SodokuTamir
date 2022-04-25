@@ -16,7 +16,8 @@ namespace SodokuTamir
         
         protected int length;
         protected int width;
-        public Cube(int length, int width)
+        protected int x, y;
+        public Cube(int x, int y, int length, int width)
         {
             this.length = length;
             this.width = width;
@@ -29,6 +30,14 @@ namespace SodokuTamir
         public int getWidth()
         {
             return this.width;
+        }
+        public int getX()
+        {
+            return this.x;
+        }
+        public int getY()
+        {
+            return this.y;
         }
     }
 }

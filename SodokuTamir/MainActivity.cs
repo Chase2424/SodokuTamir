@@ -3,11 +3,14 @@ using Android.Content;
 using Android.Graphics;
 using Android.Media;
 using Android.OS;
+using Android.Preferences;
 using Android.Runtime;
 using Android.Widget;
 using AndroidX.AppCompat.App;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace SodokuTamir
 {
@@ -15,16 +18,16 @@ namespace SodokuTamir
     public class MainActivity : AppCompatActivity 
     {
         PlayerAdapter adapter;
-       
+        public static ISharedPreferences SP;
         public static List<Player> list = new List<Player>();
         Button btnStart, btnRecord;
         RadioButton Easy, Medium, Hard;
         EditText PlayerName;
         
-        MediaPlayer mp;
+        public static MediaPlayer mp;
         BroadcastBattery broadCastBattery;
         AudioManager am;
-        Intent backgroundMusic;
+        public static Intent backgroundMusic;
         Android.Views.IMenu menu;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -33,9 +36,24 @@ namespace SodokuTamir
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
+            SP = PreferenceManager.GetDefaultSharedPreferences(this);
             backgroundMusic = new Intent(this, typeof(MusicService));
-            mp = MediaPlayer.Create(this, Resource.Raw.Song);
-            am = (AudioManager)GetSystemService(Context.AudioService);
+            try
+            {
+                if (SP.GetString("Pathmp3", "nothing").Equals("nothing"))
+                {
+                    mp = MediaPlayer.Create(this, Resource.Raw.Song);
+                }
+                else
+                {
+                    mp = MediaPlayer.Create(this, Android.Net.Uri.Parse(SP.GetString("Pathmp3", "nothing")));
+                }
+            }
+            catch//יקרה מתי שהקובץ היה קיים אך נמחק
+            {
+                mp = MediaPlayer.Create(this, Resource.Raw.Song);
+            }
+                am = (AudioManager)GetSystemService(Context.AudioService);
             broadCastBattery = new BroadcastBattery(this);
             btnStart = (Button)FindViewById(Resource.Id.start);
             btnRecord = (Button)FindViewById(Resource.Id.Record);
@@ -47,16 +65,33 @@ namespace SodokuTamir
             btnRecord.Click += BtnRecord_Click;
         }
 
-       
 
-        public interface IBackButtonListener
-        {
-            void OnBackPressed();
-        }
+
+
         protected override void OnResume()
         {
             base.OnResume();
             RegisterReceiver(broadCastBattery, new IntentFilter(Intent.ActionBatteryChanged));
+            if (this.menu != null)
+            {
+                if (MainActivity.SP.GetBoolean("IsMusicOn", false) == false)
+                {
+                    this.menu.GetItem(0).SetVisible(true);
+                    this.menu.GetItem(1).SetVisible(false);
+                }
+                else
+                {
+                    this.menu.GetItem(0).SetVisible(false);
+                    this.menu.GetItem(1).SetVisible(true);
+
+                }
+            }
+
+        }
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            StopService(MainActivity.backgroundMusic);
         }
         protected override void OnPause()
         {
@@ -68,36 +103,100 @@ namespace SodokuTamir
         {
             this.menu = menu;
             MenuInflater.Inflate(Resource.Menu.MusicMenu, this.menu);
-            this.menu.GetItem(1).SetVisible(false);
-            this.menu.GetItem(0).SetVisible(true);
+            this.menu.GetItem(2).SetVisible(true);
+            if (MainActivity.SP.GetBoolean("IsMusicOn", false) == false)
+            {
+                this.menu.GetItem(0).SetVisible(true);
+                this.menu.GetItem(1).SetVisible(false);
+            }
+            else if (MainActivity.SP.GetBoolean("IsMusicOn", false) == true)
+            {
+                this.menu.GetItem(0).SetVisible(false);
+                this.menu.GetItem(1).SetVisible(true);
+                StartService(MainActivity.backgroundMusic);
+            }
             return true;
+        }
+        public async void PickFile()
+        {
+            try
+            {
+                var result = await FilePicker.PickAsync();
+                if (result != null)
+                {
+                    String Text = $"File Name: {result.FileName}";
+                    if (result.FileName.EndsWith("mp3", StringComparison.OrdinalIgnoreCase))
+                    {
+                        //Toast.MakeText(this, ""+ result.FullPath, ToastLength.Long).Show();
+                        mp = MediaPlayer.Create(this, Android.Net.Uri.Parse(result.FullPath));
+                        var editor = SP.Edit();
+                        editor.PutString("Pathmp3", result.FullPath);
+                        editor.Commit();
+
+                    }
+                    else
+                    {
+                        Toast.MakeText(this, "Please select a mp3 file", ToastLength.Long).Show();
+                    }
+                }
+
+                
+            }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, ""+ex, ToastLength.Long).Show();
+            }
+
+            
         }
         public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
         {
-
             base.OnOptionsItemSelected(item);
+            if (item.ItemId == Resource.Id.MusicFile)
+            {
+                PickFile();
+               
+            }           
+            else if (SP.GetBoolean("IsMusicOn", false) == false)
+            {
+                var editor = SP.Edit();
+                editor.PutBoolean("IsMusicOn", true);
+                editor.Commit();
+                this.menu.GetItem(0).SetVisible(false);
+                this.menu.GetItem(1).SetVisible(true);           
+                StartService(MainActivity.backgroundMusic);
+                
+            }
+            else
+            {
+                var editor = SP.Edit();
+                editor.PutBoolean("IsMusicOn", false);
+                StopService(MainActivity.backgroundMusic);
+                editor.Commit();
+                this.menu.GetItem(0).SetVisible(true);
+                this.menu.GetItem(1).SetVisible(false);
+            }
 
-
-
+            /*
             if (item.ItemId == Resource.Id.action_startMusic)
             {
-                if (this.menu.GetItem(0).IsVisible)
+                if (MainActivity.menu.GetItem(0).IsVisible)
                 {
-                    
-                    this.menu.GetItem(0).SetVisible(false);
-                    this.menu.GetItem(1).SetVisible(true);
-                    StartService(backgroundMusic);
+
+                    MainActivity.menu.GetItem(0).SetVisible(false);
+                    MainActivity.menu.GetItem(1).SetVisible(true);
+                    StartService(MainActivity.backgroundMusic);
                 }
             }
             else if (item.ItemId == Resource.Id.action_stopMusic)
             {
-                if (this.menu.GetItem(1).IsVisible)
+                if (MainActivity.menu.GetItem(1).IsVisible)
                 {
-                    this.menu.GetItem(1).SetVisible(false);
-                    this.menu.GetItem(0).SetVisible(true);
-                    StopService(backgroundMusic);
+                    MainActivity.menu.GetItem(1).SetVisible(false);
+                    MainActivity.menu.GetItem(0).SetVisible(true);
+                    StopService(MainActivity.backgroundMusic);
                 }
-            }
+            }*/
             return true;
         
          }
@@ -150,9 +249,8 @@ namespace SodokuTamir
                     intent.PutExtra("difficulty", 1);
                 }
                 intent.PutExtra("PlayerName", PlayerName.Text);
-                this.menu.GetItem(1).SetVisible(false);
-                this.menu.GetItem(0).SetVisible(true);
-                StopService(backgroundMusic);
+                
+               
                 StartActivity(intent);
             }
             else

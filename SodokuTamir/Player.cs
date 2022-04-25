@@ -31,9 +31,16 @@ namespace SodokuTamir
             this.Time = Time;
             this.Date = Date;
             this.StrBoard = board;
-           
 
 
+
+        }
+        public Player(string Name, string Time, string Date, SudokuCell[,] SodokuBoard)
+        {
+            this.Name = Name;
+            this.Time = Time;
+            this.Date = Date;
+            this.SodokuBoard = SodokuBoard;
         }
         public string GetStrBoard()
         {
@@ -66,13 +73,7 @@ namespace SodokuTamir
             }
             return Str;
         }
-        public Player(string Name, string Time, string Date, SudokuCell[,] SodokuBoard)
-        {
-            this.Name = Name;
-            this.Time = Time;
-            this.Date = Date;
-            this.SodokuBoard = SodokuBoard;
-        }
+        
         public string getName()
         {
             return this.Name;

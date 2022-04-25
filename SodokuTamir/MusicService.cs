@@ -21,9 +21,10 @@ namespace SodokuTamir
         public override void OnCreate()
         {
             base.OnCreate();
-            mp = MediaPlayer.Create(this, Resource.Raw.Song);
+            mp = MainActivity.mp;
             am = (AudioManager)GetSystemService(Context.AudioService);
         }
+        
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
 
