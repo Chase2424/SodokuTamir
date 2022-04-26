@@ -22,7 +22,9 @@ namespace SodokuTamir
         private bool mExternalStorageAvailable;
         private bool mExternalStorageWriteable;
         Android.Views.IMenu menu;
-
+        public static string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
+        public static string game_folder = root + "/saved_sodokus";
+        public static string record_file = Path.Combine(game_folder, "records.txt");
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -94,7 +96,7 @@ namespace SodokuTamir
         public void ReadRecordFiles()
         {
             string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
-            string game_folder = root + "/saved_sodokus";
+            
             string[] files = Directory.GetFiles(game_folder);
             foreach (string oCurrent in files)
             {

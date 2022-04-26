@@ -46,12 +46,12 @@ namespace SodokuTamir
         static RelativeLayout L1;
         static int ButtonHeight = 120, ButtonWidth = 120;
         static SudokuCell[,] GuessCells;
+        static string SaveClueBoard;
         static List<int[,]> Solutions;
         static int result_num = 0;
         public static LinearLayout.LayoutParams layoutParamsClicked = new LinearLayout.LayoutParams(300, 300);
         public static LinearLayout.LayoutParams layoutParamsNotClicked = new LinearLayout.LayoutParams(300, 300);
         ISharedPreferences shared;
-        static int guess;
         static bool finishedGenerating = false;
         public static EditText et;
         private bool mExternalStorageAvailable;
@@ -220,24 +220,23 @@ namespace SodokuTamir
         }
         public void SaveBoard()
         {
-            string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
             
-            var game_folder = Path.Combine(root, "saved_sodokus");
-            if (!System.IO.File.Exists(game_folder))
+            if (!System.IO.File.Exists(RecordActivity.game_folder))
             {
-                Directory.CreateDirectory(game_folder);
+                Directory.CreateDirectory(RecordActivity.game_folder);
             }
             string PlayerName = Intent.GetStringExtra("PlayerName");
-            String record = PlayerName + "," + duration + "," + startTime + "," + BoardToString(cells);
-            var record_file = game_folder + "/records.txt";
-            StreamWriter sw = System.IO.File.AppendText(record_file);
+            String record = PlayerName + "," + duration + "," + startTime + "," + SaveClueBoard;
+            StreamWriter sw = System.IO.File.AppendText(RecordActivity.record_file);
             sw.WriteLine(record);
             
             
 
-            int fCount = Directory.GetFiles(game_folder, "*.txt", SearchOption.TopDirectoryOnly).Length;
+            int fCount = Directory.GetFiles(RecordActivity.game_folder, "*.txt", SearchOption.TopDirectoryOnly).Length;
             Toast.MakeText(this, fCount.ToString(), ToastLength.Short).Show();
             sw.Flush();
+            sw.Close();
+
             //
 
 
@@ -437,7 +436,7 @@ namespace SodokuTamir
             strBoard = new string(board);
             SudokuCell[,] arr2 = new SudokuCell[9, 9];
             arr2 = StringToBoard(strBoard);
-
+            SaveClueBoard = strBoard;
             return arr2;
             /*
             for (int i = 0; i < 9; i++)
