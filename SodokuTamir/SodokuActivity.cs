@@ -32,12 +32,10 @@ namespace SodokuTamir
 
         static ArrayList buttons_to_remove = new ArrayList();
         Android.Views.IMenu menu;
-        Button Eraser;
+        ImageButton Eraser,Pen,Pencil;
         int toolType = 1;//0-eraser,1-pencil,2-pen
-        Button Pen;
         Intent backgroundMusic;
         static int lives = 3;
-        Button Pencil;
         //ISharedPreferences sp;
         static int difficulty;
         static SudokuCell[,] cells;
@@ -49,7 +47,8 @@ namespace SodokuTamir
         static SudokuCell[,] GuessCells;
         static List<int[,]> Solutions;
         static int result_num = 0;
-       
+        public static LinearLayout.LayoutParams layoutParamsClicked = new LinearLayout.LayoutParams(300, 300);
+        public static LinearLayout.LayoutParams layoutParamsNotClicked = new LinearLayout.LayoutParams(300, 300);
         ISharedPreferences shared;
         static int guess;
         static bool finishedGenerating = false;
@@ -135,16 +134,18 @@ namespace SodokuTamir
             L1 = (RelativeLayout)FindViewById(Resource.Id.Board);
             
             startTime = Convert.ToDateTime(DateTime.Now.ToString());
-            
+           
+            layoutParamsClicked.SetMargins(5, 5, 5, 5);
+            layoutParamsNotClicked.SetMargins(0, 0, 0, 0);
             cells = new SudokuCell[9, 9];
-            Eraser = (Button)FindViewById(Resource.Id.Eraser);
-            Pen = (Button)FindViewById(Resource.Id.Pen);
-            Pencil = (Button)FindViewById(Resource.Id.Pencil);
+            Eraser = (ImageButton)FindViewById(Resource.Id.Eraser);
+            Pen = (ImageButton)FindViewById(Resource.Id.Pen);
+            Pencil = (ImageButton)FindViewById(Resource.Id.Pencil);
             Eraser.Click += Eraser_Click;
             Pen.Click += Pen_Click;
             Pencil.Click += Pencil_Click;
             setPermissions();
-            
+             
             for (int i = 0; i < 9; i++)
             {
 
@@ -180,16 +181,26 @@ namespace SodokuTamir
         private void Pencil_Click(object sender, EventArgs e)
         {
             this.toolType = 1;
+            Pencil.LayoutParameters = layoutParamsClicked;
+            Pen.LayoutParameters = layoutParamsNotClicked;
+            Eraser.LayoutParameters = layoutParamsNotClicked;
         }
 
         private void Pen_Click(object sender, EventArgs e)
         {
             this.toolType = 2;
+            Pen.LayoutParameters = layoutParamsClicked;
+            Eraser.LayoutParameters = layoutParamsNotClicked;
+            Pencil.LayoutParameters = layoutParamsNotClicked;
         }
 
         private void Eraser_Click(object sender, EventArgs e)
         {
             this.toolType = 0;
+            Eraser.LayoutParameters = layoutParamsClicked;
+            Pencil.LayoutParameters = layoutParamsNotClicked;
+            Pen.LayoutParameters = layoutParamsNotClicked;
+
         }
 
         //פונקציה המעבירה את ערכי הלוח למחרוזת אחת
