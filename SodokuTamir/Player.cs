@@ -46,7 +46,7 @@ namespace SodokuTamir
         {
             return this.StrBoard;
         }
-        public void StringToBoard(string str,Context context)
+        public void StringToBoard(string str, Context context)
         {
 
             SudokuCell[,] arr = new SudokuCell[9, 9];
@@ -61,6 +61,7 @@ namespace SodokuTamir
             }
             this.SodokuBoard = arr;
         }
+        
         public string BoardToString(SudokuCell[,] arr)
         {
             string Str = "";

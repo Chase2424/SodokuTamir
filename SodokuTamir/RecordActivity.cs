@@ -23,7 +23,7 @@ namespace SodokuTamir
         private bool mExternalStorageWriteable;
         Android.Views.IMenu menu;
         public static string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
-        public static string game_folder = root + "/saved_sodokus";
+        public static string game_folder = Path.Combine(root, "saved_sodokus");
         public static string record_file = Path.Combine(game_folder, "records.txt");
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -96,15 +96,14 @@ namespace SodokuTamir
         public void ReadRecordFiles()
         {
             string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
-            
-            string[] files = Directory.GetFiles(game_folder);
-            foreach (string oCurrent in files)
+            //TODO check if file exists
+            String[] lines = System.IO.File.ReadAllLines(record_file);
+            foreach (string oCurrent in lines)
             {
-                string text = System.IO.File.ReadAllText(oCurrent);
-                string PlayerName = text.Split(",")[0];
-                string duration = text.Split(",")[1];
-                string Date = text.Split(",")[2];
-                string Board = text.Split(",")[3];
+                string PlayerName = oCurrent.Split(",")[0];
+                string duration = oCurrent.Split(",")[1];
+                string Date = oCurrent.Split(",")[2];
+                string Board = oCurrent.Split(",")[3];
                 MainActivity.list.Add(new Player(PlayerName, duration, Date, StringToBoard(Board)));
             }
             this.adapter = new PlayerAdapter(this, MainActivity.list,"RecordActivity");

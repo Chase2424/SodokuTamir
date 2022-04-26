@@ -5,6 +5,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,8 +20,10 @@ namespace SodokuTamir
         int[,] SavedArray = new int[9, 9];
         int ButtonHeight = 120, ButtonWidth = 120;
         SudokuCell[,] cells;
+        String strboard;
         RelativeLayout board;
         bool first_time = true;
+        static ArrayList buttons_to_remove = new ArrayList();
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -36,6 +39,7 @@ namespace SodokuTamir
             if (Intent.GetStringExtra("Type").Equals("Private"))
             {
                 this.cells = MainActivity.list[place].getBoard();
+
             }
             else
 
@@ -46,7 +50,7 @@ namespace SodokuTamir
             BuildBoard();
         }
 
-
+        
         protected override void OnDestroy()
         {
             base.OnDestroy();
@@ -62,28 +66,33 @@ namespace SodokuTamir
             }
 
         }
-
-            public void BuildBoard()
+        
+        public void BuildBoard()
         {
-           
-
-                try
-                {
-                this.board.RemoveAllViews();
-
-
+            
+            try
+            {
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(this.cells[0,0].getWidth(), this.cells[0, 0].getLength());
+                int x = 0, y = 0;
+                
                 for (int i = 0; i < 9; i++)
                 {
 
+                    y = i * ButtonWidth;
                     for (int j = 0; j < 9; j++)
                     {
-                       
+                        x = j * ButtonHeight;
+                        if (this.cells[i, j].getValue() != 0)
+                        {
+                            this.board.RemoveView(this.cells[i, j].getButton());
+                            this.board.AddView(this.cells[i, j].getButton());
 
-                        board.AddView(this.cells[i, j].getButton());
-                        //
-                        //String s =split[i*9+j];
-                        //  table[i, j] = new SudokuCell();
-
+                        }
+                        else
+                        {
+                            this.board.RemoveView(this.cells[i, j].getButton());
+                            this.board.AddView(this.cells[i, j].getEmptyButton());
+                        }
                     }
                 }
             }
