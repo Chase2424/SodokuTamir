@@ -16,9 +16,10 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Collections;
 using AndroidX.AppCompat.App;
+using System.IO;
+
 //TODO
 // merge cells and getcells
-// add numbers keyboard
 // fix application close
 // fix back button
 // add clean file button
@@ -169,6 +170,7 @@ namespace SodokuTamir
             board[0, 0] = allow_to_use1[rndNum];
             generate_array(board, 1, 0, allow_to_use1);
 
+            SaveBoard();
             //  print_arr(board,0,0);
 
 
@@ -219,45 +221,28 @@ namespace SodokuTamir
         public void SaveBoard()
         {
             string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
-
-            string game_folder = root + "/saved_sodokus";
-            //Toast.MakeText(this, game_folder, ToastLength.Long).Show();
-            int fCount = Directory.GetFiles(game_folder, "*", SearchOption.TopDirectoryOnly).Length;
-            if ((int)fCount > 50)
+            
+            var game_folder = Path.Combine(root, "saved_sodokus");
+            if (!System.IO.File.Exists(game_folder))
             {
-                Toast.MakeText(this, " Too many files, please clean some sodoku files  ", ToastLength.Short).Show();
-                return;
+                Directory.CreateDirectory(game_folder);
             }
-            Context context = this;
-            ISharedPreferences sp = PreferenceManager.GetDefaultSharedPreferences(context);
             string PlayerName = Intent.GetStringExtra("PlayerName");
-            var editor = sp.Edit();
+            String record = PlayerName + "," + duration + "," + startTime + "," + BoardToString(cells);
+            var record_file = game_folder + "/records.txt";
+            StreamWriter sw = System.IO.File.AppendText(record_file);
+            sw.WriteLine(record);
+            
+            
 
-            editor.PutInt("Number", sp.GetInt("Number", 0) + 1);
-            String Sname = "Sodoku-" + sp.GetInt("Number", 0) + ".txt";
-            editor.Commit();
-
-            Java.IO.File myDir = new Java.IO.File(game_folder);
-            myDir.Mkdir();
-
-            Java.IO.File file = new Java.IO.File(myDir, Sname);
-            if (file.Exists())
-                file.Delete();
+            int fCount = Directory.GetFiles(game_folder, "*.txt", SearchOption.TopDirectoryOnly).Length;
+            Toast.MakeText(this, fCount.ToString(), ToastLength.Short).Show();
+            sw.Flush();
+            //
 
 
-            string filename = Path.Combine(game_folder, Sname);
-            FileStream fs = new FileStream(filename, FileMode.Create);
 
-            byte[] bytes = Encoding.UTF8.GetBytes(PlayerName + "," + duration + "," + startTime + "," + BoardToString(cells));
 
-            fs.Write(bytes, 0, bytes.Length);
-            fs.Flush();/*
-            for (int i=0;i<9;i++) {
-                for (int j=0;j<9;j++)
-                {
-                    cells[i, j].getButton().Click += SodokuActivity_Click;
-                }
-            }*/
         }
         /*
         public void onBackPressed()
@@ -265,7 +250,7 @@ namespace SodokuTamir
             Toast.MakeText(this, " Press Back again to Exit ", ToastLength.Short).Show();
             return;
         }*/
-        private void SodokuActivity_Click(object sender, EventArgs e)
+            private void SodokuActivity_Click(object sender, EventArgs e)
         {
             Button button = sender as Button;
             int btnTag = (int)button.Tag;
@@ -780,6 +765,7 @@ namespace SodokuTamir
         public void setPermissions()
         {
             string state = Android.OS.Environment.ExternalStorageState;
+           
             if (Android.OS.Environment.MediaMounted.Equals(state))
             {
                 //we can read and write the media
