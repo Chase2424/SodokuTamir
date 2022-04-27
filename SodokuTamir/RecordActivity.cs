@@ -38,14 +38,22 @@ namespace SodokuTamir
             //MainActivity.list.Add(new Player("Guy2", 20020, "4th july 2020"));
             //MainActivity.list.Add(new Player("Girl", 100, "4th july 2020"));
             MainActivity.list.Clear();
-            ReadRecordFiles();
+            if(System.IO.File.Exists(record_file))
+                ReadRecordFiles();
+            else
+            {
+                Toast.MakeText(this, "No records found", ToastLength.Long).Show();
+            }
             lv.ItemClick += Lv_ItemClick;
+            
         }
+
         
+
         public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
         {
            this.menu = menu;
-            MenuInflater.Inflate(Resource.Menu.MusicMenu, this.menu);
+            MenuInflater.Inflate(Resource.Menu.MainMenu, this.menu);
             this.menu.GetItem(2).SetVisible(false);
             if (MainActivity.SP.GetBoolean("IsMusicOn", false) == false)
             {
@@ -63,7 +71,13 @@ namespace SodokuTamir
         public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
         {
             base.OnOptionsItemSelected(item);
-            if (MainActivity.SP.GetBoolean("IsMusicOn", false) == false)
+            if(item.ItemId == Resource.Id.DeleteRecords)
+            {
+                if(System.IO.File.Exists(record_file))
+                     System.IO.File.Delete(record_file);
+                Finish();
+            }
+            else if (MainActivity.SP.GetBoolean("IsMusicOn", false) == false)
             {
                 var editor = MainActivity.SP.Edit();
                 editor.PutBoolean("IsMusicOn", true);
@@ -73,7 +87,7 @@ namespace SodokuTamir
                 StartService(MainActivity.backgroundMusic);
 
             }
-            else
+            else 
             {
                 var editor = MainActivity.SP.Edit();
                 editor.PutBoolean("IsMusicOn", false);
@@ -85,6 +99,7 @@ namespace SodokuTamir
             return true;
 
         }
+        
         private void Lv_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
             Intent i = new Intent(this, typeof(DisplayRecord));

@@ -34,8 +34,9 @@ namespace SodokuTamir
         public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
         {
             this.menu = menu;
-            MenuInflater.Inflate(Resource.Menu.MusicMenu, this.menu);
+            MenuInflater.Inflate(Resource.Menu.MainMenu, this.menu);
             this.menu.GetItem(2).SetVisible(false);
+            this.menu.GetItem(3).SetVisible(false);
             if (MainActivity.SP.GetBoolean("IsMusicOn", false) == false)
             {
                 this.menu.GetItem(0).SetVisible(true);

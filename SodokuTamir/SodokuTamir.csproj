@@ -153,7 +153,7 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\menu\MusicMenu.xml" />
+    <AndroidResource Include="Resources\menu\MainMenu.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\raw\Song.mp3" />

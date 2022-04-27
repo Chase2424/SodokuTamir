@@ -18,7 +18,12 @@
 	android:title="SelectMusic"
 	android:orderInCategory="300"
 	android:showAsAction="never"/>
-		
+	<item
+		android:id="@+id/DeleteRecords"
+	android:title="DeleteRecords"
+	android:orderInCategory="300"
+	android:showAsAction="never"
+		/>	
 	 
 </menu>
 

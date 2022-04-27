@@ -70,8 +70,9 @@ namespace SodokuTamir
         public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
         {
             this.menu = menu;
-            MenuInflater.Inflate(Resource.Menu.MusicMenu, this.menu);
+            MenuInflater.Inflate(Resource.Menu.MainMenu, this.menu);
             this.menu.GetItem(2).SetVisible(false);
+            this.menu.GetItem(3).SetVisible(false);
             if (MainActivity.SP.GetBoolean("IsMusicOn", false) == false)
             {
                 this.menu.GetItem(0).SetVisible(true);
@@ -84,6 +85,13 @@ namespace SodokuTamir
 
             }
             return true;
+        }
+        
+        protected override void OnStop()
+        {
+
+            base.OnStop();
+            //UnregisterReceiver(PhoneReceiver);
         }
         public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
         {
@@ -124,8 +132,9 @@ namespace SodokuTamir
                 L1.RemoveAllViews();
                 gameStatus = false;
             }*/
-            
-            ThreadStart ts = new ThreadStart(timerclass.Run);
+            //RegisterReceiver(PhoneReceiver);
+
+           ThreadStart ts = new ThreadStart(timerclass.Run);
             Thread thread = new Thread(ts);
             thread.Start();
             _singleTone = this;
@@ -170,7 +179,7 @@ namespace SodokuTamir
             board[0, 0] = allow_to_use1[rndNum];
             generate_array(board, 1, 0, allow_to_use1);
 
-            SaveBoard();
+            
             //  print_arr(board,0,0);
 
 
@@ -282,10 +291,9 @@ namespace SodokuTamir
                                 if (lives == 0)
                                 {
                                     L1.RemoveAllViewsInLayout();
-                                    Toast.MakeText(this, "GAME-OVER", ToastLength.Long).Show();
+                                    Toast.MakeText(this, "GAME-OVER", ToastLength.Short).Show();
 
-                                    Intent i = new Intent(this, typeof(MainActivity));
-                                    StartActivity(i);
+                                    Finish();
                                 }
                                 else
                                 {
@@ -332,15 +340,13 @@ namespace SodokuTamir
             string PlayerName = Intent.GetStringExtra("PlayerName");
             Player p = new Player(PlayerName, "" + duration, "" + startTime, BoardToString(cells));
             await FirebaseUser.AddScore(p);
-            Intent i = new Intent(this, typeof(MainActivity));
-            StartActivity(i);
+            Finish();
         }
 
         private void Privately_Click(object sender, EventArgs e)
         {
             SaveBoard();
-            Intent i = new Intent(this, typeof(MainActivity));
-            StartActivity(i);
+            Finish();
         }
 
         public void NumberEntry()
