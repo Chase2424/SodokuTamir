@@ -338,7 +338,7 @@ namespace SodokuTamir
         {
             //doFireWallStuff
             string PlayerName = Intent.GetStringExtra("PlayerName");
-            Player p = new Player(PlayerName, "" + duration, "" + startTime, BoardToString(cells));
+            Player p = new Player(PlayerName, "" + duration, "" + startTime, SaveClueBoard);
             await FirebaseUser.AddScore(p);
             Finish();
         }
