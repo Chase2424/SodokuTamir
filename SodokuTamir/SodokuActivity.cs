@@ -60,11 +60,11 @@ namespace SodokuTamir
         String input;
         MyPhoneReceiver PhoneReceiver = new MyPhoneReceiver();
         LinearLayout l1;
-        protected override void OnResume()
+        protected override void OnDestroy()
         {
-
-            base.OnResume();
-            //RegisterReceiver(PhoneReceiver, new IntentFilter(Intent.ActionCall));
+            base.OnDestroy();
+            timerclass.setStopped();
+            
         }
 
         public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
@@ -132,8 +132,8 @@ namespace SodokuTamir
                 L1.RemoveAllViews();
                 gameStatus = false;
             }*/
-            //RegisterReceiver(PhoneReceiver);
-
+            
+            lives = 3;
            ThreadStart ts = new ThreadStart(timerclass.Run);
             Thread thread = new Thread(ts);
             thread.Start();
@@ -241,8 +241,8 @@ namespace SodokuTamir
             
             
 
-            int fCount = Directory.GetFiles(RecordActivity.game_folder, "*.txt", SearchOption.TopDirectoryOnly).Length;
-            Toast.MakeText(this, fCount.ToString(), ToastLength.Short).Show();
+            //int fCount = Directory.GetFiles(RecordActivity.game_folder, "*.txt", SearchOption.TopDirectoryOnly).Length;
+            //Toast.MakeText(this, fCount.ToString(), ToastLength.Short).Show();
             sw.Flush();
             sw.Close();
 
@@ -292,7 +292,7 @@ namespace SodokuTamir
                                 {
                                     L1.RemoveAllViewsInLayout();
                                     Toast.MakeText(this, "GAME-OVER", ToastLength.Short).Show();
-
+                                    timerclass.setStopped();
                                     Finish();
                                 }
                                 else

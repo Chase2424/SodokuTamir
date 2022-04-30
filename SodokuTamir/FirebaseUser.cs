@@ -17,21 +17,16 @@ namespace SodokuTamir
 {
     public static class FirebaseUser
     {
-        public static FirebaseClient firebase = new FirebaseClient("https://sodokutamir-default-rtdb.firebaseio.com/");
-        public static string tableName = "sodokutamir";
-        /* public static async Task<List<Player>> GetAll()
-         {
-             return (await firebase
-                 .Child(tableName)
-                 .OnceAsync<Player>()).Select(item => new Player
-                 {
-                     name = item.Object.name,
-                     Time = item.Object.Time,
-                     Date = item.Object.Date,
-                     SodokuBoard = item.Object.SodokuBoard
-
-                 }).ToList();
-         }*/
+        /// <summary>
+        /// במחלקה זו מוגדר ההתעסקות עם הFireBase.
+        /// פונים למחלקה זו כאשר מוסיפים "שיא גלובלי" או כאשר אנו קוראים את השיאים
+        /// </summary>
+        public static FirebaseClient firebase = new FirebaseClient("https://sodokutamir-default-rtdb.firebaseio.com/");//יצירת משתמש וקישור לנתונים שלי בענן
+        public static string tableName = "sodokutamir";//שם הטבלה ששמורים דרכה
+       /// <summary>
+       /// פונקציה זו לוקחת את כל המשתמשים אשר נשמרו במאגר המידע בענן וממירה אותם לרשימת שחקנים
+       /// </summary>
+       /// <returns>הפונקציה מחזיקה רשימת שחקנים</returns>
         public static async Task<List<Player>> GetAll()
         {
             return (await firebase
@@ -46,7 +41,11 @@ namespace SodokuTamir
 
                }).ToList();
         }
-        
+        /// <summary>
+        /// הפונקציה מקבלת אובייקט שחקן ומוסיפה אותו למאגר מידע
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns>הפונקציה לא מחזירה כלום</returns>
         public static async Task AddScore(Player player)
         {
 

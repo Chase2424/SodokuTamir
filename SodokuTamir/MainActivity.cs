@@ -16,17 +16,14 @@ namespace SodokuTamir
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : AppCompatActivity 
-    {
-        PlayerAdapter adapter;
-        public static ISharedPreferences SP;
-        public static List<Player> list = new List<Player>();
-        Button btnStart, btnRecord;
-        RadioButton Easy, Medium, Hard;
-        EditText PlayerName;
-        
-        public static MediaPlayer mp;
-        BroadcastBattery broadCastBattery;
-        AudioManager am;
+    {       
+        public static ISharedPreferences SP;     
+        Button btnStart, btnRecord;// כפתור להתחלת המשחק וכפתור ללראות שיאים
+        RadioButton Easy, Medium, Hard;// כפתורי רדיו לבחירת רמת הקושי
+        EditText PlayerName;// שם השחקן
+        public static MediaPlayer mp;// נגן מוזיקה 
+        BroadcastBattery broadCastBattery;//מאזין למצב הסוללה
+        AudioManager am;//מנהל מוזיקה
         public static Intent backgroundMusic;
         Android.Views.IMenu menu;
 
@@ -38,7 +35,7 @@ namespace SodokuTamir
             SetContentView(Resource.Layout.activity_main);
             SP = PreferenceManager.GetDefaultSharedPreferences(this);
             backgroundMusic = new Intent(this, typeof(MusicService));
-            try
+            try//מנגן את המוזיקה לפי המצב השמור מראש 
             {
                 if (SP.GetString("Pathmp3", "nothing").Equals("nothing"))
                 {
@@ -71,7 +68,7 @@ namespace SodokuTamir
         protected override void OnResume()
         {
             base.OnResume();
-            RegisterReceiver(broadCastBattery, new IntentFilter(Intent.ActionBatteryChanged));
+            RegisterReceiver(broadCastBattery, new IntentFilter(Intent.ActionBatteryChanged));//רושם את המאזין סוללה למערכת
             if (this.menu != null)
             {
                 if (MainActivity.SP.GetBoolean("IsMusicOn", false) == false)
@@ -91,13 +88,10 @@ namespace SodokuTamir
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            StopService(MainActivity.backgroundMusic);
+            StopService(MainActivity.backgroundMusic);//עוצר את מוזיקת הרקע
+            UnregisterReceiver(broadCastBattery);// קוטע את התיאום בין המאזין לסוללה למערכת
         }
-        protected override void OnPause()
-        {
-            UnregisterReceiver(broadCastBattery);
-            base.OnPause();
-        }
+        
 
         public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
         {

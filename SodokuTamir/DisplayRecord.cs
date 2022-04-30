@@ -16,14 +16,14 @@ namespace SodokuTamir
     [Activity(Label = "DisplayRecord")]
     public class DisplayRecord : Activity
     {
+       /// <summary>
+       /// מחלקה זו מראה את הסודוקו אשר שהשיא הנלחץ במחלקות הקודמות PublicScores,RecordActivity הציג
+       /// </summary>
        
-        int[,] SavedArray = new int[9, 9];
-        int ButtonHeight = 120, ButtonWidth = 120;
-        SudokuCell[,] cells;
-        String strboard;
+        int ButtonHeight , ButtonWidth ;
+        SudokuCell[,] cells;// מערך של תאי סודוקו
         RelativeLayout board;
-        bool first_time = true;
-        static ArrayList buttons_to_remove = new ArrayList();
+        
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -36,15 +36,14 @@ namespace SodokuTamir
            
             int place = Intent.GetIntExtra("Position", 0);
             this.cells  = new SudokuCell[9, 9];
-            if (Intent.GetStringExtra("Type").Equals("Private"))
+            if (Intent.GetStringExtra("Type").Equals("Private"))// השיאים הם פרטיים
             {
-                this.cells = MainActivity.list[place].getBoard();
+                this.cells = RecordActivity.list[place].getBoard();
 
             }
-            else
-
+            else// השיאים הם גלובליים
             {
-                PublicScores.listPublic[place].StringToBoard(PublicScores.listPublic[place].GetStrBoard(),this);
+                PublicScores.listPublic[place].StringToBoard(PublicScores.listPublic[place].GetStrBoard(),this);// השיאים הגלובליים נשמרו בצורת מחזורת אז מתבצעת המרה ללוח משבצות סודוקו
                 this.cells = PublicScores.listPublic[place].getBoard();
             }
             BuildBoard();
@@ -54,43 +53,43 @@ namespace SodokuTamir
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < 9; i++)//מוריד את השיוך של הכפתורים ברשימה ללוח Layout.
             {
 
                 for (int j = 0; j < 9; j++)
                 {
-
-
                     board.RemoveView(this.cells[i, j].getButton());
                 }
             }
 
         }
         
-        public void BuildBoard()
+        public void BuildBoard()// בונה ומוסיף את הלוח סודוקו למסך
         {
-            
+
             try
             {
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(this.cells[0,0].getWidth(), this.cells[0, 0].getLength());
+                ButtonWidth = this.cells[0, 0].getWidth();
+                ButtonHeight = this.cells[0, 0].getLength();
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ButtonWidth, ButtonHeight);
                 int x = 0, y = 0;
                 
                 for (int i = 0; i < 9; i++)
                 {
 
-                    y = i * ButtonWidth;
+                    y = i * ButtonHeight;
                     for (int j = 0; j < 9; j++)
                     {
-                        x = j * ButtonHeight;
+                        x = j * ButtonWidth;
                         if (this.cells[i, j].getValue() != 0)
                         {
-                            this.board.RemoveView(this.cells[i, j].getButton());
+                           // this.board.RemoveView(this.cells[i, j].getButton());
                             this.board.AddView(this.cells[i, j].getButton());
 
                         }
                         else
                         {
-                            this.board.RemoveView(this.cells[i, j].getButton());
+                           // this.board.RemoveView(this.cells[i, j].getButton());
                             this.board.AddView(this.cells[i, j].getEmptyButton());
                         }
                     }

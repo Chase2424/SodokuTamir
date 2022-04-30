@@ -25,6 +25,12 @@ namespace SodokuTamir
         {
             this.context = context;
         }
+        /// <summary>
+        /// פונקציה מאזינה לסוללה ומתריעה שהסוללה יורדת מ20 אחוז
+        /// המחלקה הראשית מפעילה אותה 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="intent"></param>
         public override void OnReceive(Context context, Intent intent)
         {
             int battery = intent.GetIntExtra("level", 0);

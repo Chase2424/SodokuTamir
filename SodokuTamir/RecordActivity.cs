@@ -18,9 +18,10 @@ namespace SodokuTamir
     public class RecordActivity : AppCompatActivity
     {
         ListView lv;
-        PlayerAdapter adapter;        
+        PlayerAdapter adapter; //מתאם את רשימת השחקנים לListView       
         private bool mExternalStorageAvailable;
         private bool mExternalStorageWriteable;
+        public static List<Player> list = new List<Player>();
         Android.Views.IMenu menu;
         public static string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
         public static string game_folder = Path.Combine(root, "saved_sodokus");
@@ -37,7 +38,7 @@ namespace SodokuTamir
             //MainActivity.list.Add(new Player("Guy1", 200, "4th july 2020"));
             //MainActivity.list.Add(new Player("Guy2", 20020, "4th july 2020"));
             //MainActivity.list.Add(new Player("Girl", 100, "4th july 2020"));
-            MainActivity.list.Clear();
+            list.Clear();
             if(System.IO.File.Exists(record_file))
                 ReadRecordFiles();
             else
@@ -49,7 +50,12 @@ namespace SodokuTamir
         }
 
         
-
+        /// <summary>
+        /// פונקציה זו יוצרת את התפריט בצורה אוטומטית 
+        /// הפונקציה מגדירה איזה פריט בתפריט צריך להראות לפי הSharedPreference
+        /// </summary>
+        /// <param name="menu"></param>
+        /// <returns></returns>
         public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
         {
            this.menu = menu;
@@ -68,6 +74,12 @@ namespace SodokuTamir
             }
             return true;
         }
+        /// <summary>
+        /// הפונקציה נקראת כאשר לוחצים על פריט בתפריט
+        /// הפונקציה פועלת לפי איזה פריט שנלחץ 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
         {
             base.OnOptionsItemSelected(item);
@@ -108,6 +120,11 @@ namespace SodokuTamir
             i.PutExtra("Type", "Private");
             StartActivity(i);
         }
+        /// <summary>
+        /// פונקציה אשר קוראת מהקובץ החיצוני ומגדירה את רשימת המשתמשים לפי הקובץ
+        /// הקובץ מחולק לפי פסיקים ושורות
+        /// עבור כל שורה בין פסיק לפסיק יש שדה מוגדר
+        /// </summary>
         public void ReadRecordFiles()
         {
             string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
@@ -119,11 +136,16 @@ namespace SodokuTamir
                 string duration = oCurrent.Split(",")[1];
                 string Date = oCurrent.Split(",")[2];
                 string Board = oCurrent.Split(",")[3];
-                MainActivity.list.Add(new Player(PlayerName, duration, Date, StringToBoard(Board)));
+                RecordActivity.list.Add(new Player(PlayerName, duration, Date, StringToBoard(Board)));
             }
-            this.adapter = new PlayerAdapter(this, MainActivity.list,"RecordActivity");
+            this.adapter = new PlayerAdapter(this, RecordActivity.list,"RecordActivity");
             this.lv.Adapter = adapter;
         }
+        /// <summary>
+        /// מחלקה הממירה לוח דו ממדי של משבצות סודוקו למחרוזת
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public SudokuCell[,] StringToBoard(string str)
         {
 
@@ -138,6 +160,9 @@ namespace SodokuTamir
             }
             return arr;
         }
+        /// <summary>
+        /// פונקציה המאפשרת גישות לקרוא ולכתוב מהקובץ
+        /// </summary>
         public void setPermissitios()
         {
             string state = Android.OS.Environment.ExternalStorageState;

@@ -13,32 +13,36 @@ namespace SodokuTamir
 {
     public class SudokuCell : Cube
     {
-       
-        public int Medium = 2;
+       /// <summary>
+       /// 
+       /// </summary>
         
-        
+
+        private int x,y;
         private Button btn;
         private Context context;
         
 
-        public SudokuCell(int x, int y, int Value, int length, int width, Context context) : base(x,y,length, width)
-        {
-            
+        public SudokuCell(int x, int y, int Value, int length, int width, Context context) : base(length, width)
+        {           
             this.x = x;
-            this.btn = new Button(context) ;
-
+            this.btn = new Button(context);
             this.btn.Text = "" + Value;
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, length);
-            
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, length);            
             layoutParams.SetMargins(x, y+20 , 0, 0);
-            this.btn.LayoutParameters = layoutParams;
-            
-            
+            this.btn.LayoutParameters = layoutParams;           
             this.y = y;
             this.context = context;
 
         }
-       
+        public int getX()
+        {
+            return this.x;
+        }
+        public int getY()
+        {
+            return this.y;
+        }
         public void setValue(int value)
         {
             

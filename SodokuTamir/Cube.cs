@@ -11,13 +11,15 @@ using System.Text;
 
 namespace SodokuTamir
 {
-    public class Cube
+    public abstract class Cube
     {
+        /// <summary>
+        /// מחלקה בשם מרובע, המתארת רעיונית מהו מרובע אובייקט בעל עורך ורוחב 
+        /// </summary>
+        protected int length;//אורך האובייקט
+        protected int width;//רוחב האובייקט
         
-        protected int length;
-        protected int width;
-        protected int x, y;
-        public Cube(int x, int y, int length, int width)
+        public Cube(int length, int width)
         {
             this.length = length;
             this.width = width;
@@ -31,13 +33,6 @@ namespace SodokuTamir
         {
             return this.width;
         }
-        public int getX()
-        {
-            return this.x;
-        }
-        public int getY()
-        {
-            return this.y;
-        }
+        
     }
 }

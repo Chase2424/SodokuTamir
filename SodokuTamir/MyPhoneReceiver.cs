@@ -27,6 +27,7 @@ namespace SodokuTamir
             MyPhoneStateListener phoneStateListener = new MyPhoneStateListener(context);
             TelephonyManager telephonyManager = (TelephonyManager)Application.Context.GetSystemService(Context.TelephonyService);
             telephonyManager.Listen(phoneStateListener, PhoneStateListenerFlags.CallState);
+            
         }
     }
 }
