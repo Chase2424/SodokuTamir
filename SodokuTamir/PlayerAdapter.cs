@@ -13,11 +13,16 @@ namespace SodokuTamir
 {
     class PlayerAdapter : BaseAdapter<Player>
     {
-        Android.Content.Context context;
-        List<Player> objects;
-        Android.Views.LayoutInflater layoutInflater;
+        /// <summary>
+        /// מחלקה המתאמת בין שחקן לאובייקט רשימה בשם ListView
+        /// מטרת הקוד לקשר בין מחלקת המשתמש לתצוגה על המסך של המשתמש
+        /// </summary>
+
+        Android.Content.Context context;// נתינת הקשר למקום ממנו הופעל ההתאמה
+        List<Player> objects;//רשימת שחקנים
+        Android.Views.LayoutInflater layoutInflater;//התצוגה של הקוד
         public string activity;
-        //see if it works
+        
         public PlayerAdapter(Android.Content.Context context, System.Collections.Generic.List<Player> objects,string activity)
         {
             this.context = context;
@@ -46,11 +51,19 @@ namespace SodokuTamir
                 return this.objects[position];
             }
         }
+        /// <summary>
+        /// פונקציה המתאמת בין מידע המשתמשים לתצוגה על אובייקט ה ListView
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="convertView"></param>
+        /// <param name="parent"></param>
+        /// <returns></returns>
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
             if (activity.Equals("RecordActivity"))
             {
                 layoutInflater = ((RecordActivity)context).LayoutInflater;
+                
             }
             else
             {

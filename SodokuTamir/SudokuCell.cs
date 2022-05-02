@@ -14,12 +14,12 @@ namespace SodokuTamir
     public class SudokuCell : Cube
     {
        /// <summary>
-       /// 
+       /// מחלקת משבצת סודוקו 
        /// </summary>
         
 
-        private int x,y;
-        private Button btn;
+        private int x,y;//קורדינטות המשבצת על הלוח
+        private Button btn;// כפתור המשבצת של הסודוקו
         private Context context;
         
 
@@ -72,7 +72,8 @@ namespace SodokuTamir
             btn.Tag = 1;
             return this.btn;
         }
-        /*
+        /* במהלך הפיתוח עלה רעיון ליצור במחלקה את הפונקציה ללחיצה על הכפתור 
+         * אבל בסוף החלטנו כי נכון לעשות פונקציה משותפת במחלקה הראשית
         private void Btn_Click(object sender, EventArgs e)
         {
             // תנאי לסיום משחק

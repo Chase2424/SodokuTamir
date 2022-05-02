@@ -16,8 +16,11 @@ namespace SodokuTamir
     [Service]
     public class MusicService: Service
     {
-        MediaPlayer mp;
-        AudioManager am;
+        /// <summary>
+        /// מחלקת מוזיקה אשר רצה ברקע האפליקציה
+        /// </summary>
+        MediaPlayer mp;//נגן מוזיקה
+        AudioManager am;//מנהל מוזיקה
         public override void OnCreate()
         {
             base.OnCreate();
@@ -27,10 +30,7 @@ namespace SodokuTamir
         
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
-
-            // Toast.MakeText(this, "service started " + counter, ToastLength.Long).Show();
             PlayMusic();
-
             return base.OnStartCommand(intent, flags, startId);
         }
         public override IBinder OnBind(Intent intent)

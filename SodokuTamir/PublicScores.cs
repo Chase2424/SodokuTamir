@@ -15,11 +15,14 @@ namespace SodokuTamir
     [Activity(Label = "PublicScores")]
     public class PublicScores : AppCompatActivity
     {
-        ListView lv;
-        PlayerAdapter adapter;
-        Android.Views.IMenu menu;
+        /// <summary>
+        /// מחלקה בה מוצגים השיאים שנשמרו באופן גלובלי
+        /// </summary>
+        ListView lv;//רשימה של קוד לתצוגה
+        PlayerAdapter adapter;//מתאם שחקן לרשימת קוד לתצוגה
+        Android.Views.IMenu menu;//תפריט
 
-        public static List<Player> listPublic = new List<Player>();
+        public static List<Player> listPublic = new List<Player>();//רשימת שחקנים
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -27,10 +30,14 @@ namespace SodokuTamir
             // Create your application here
             this.lv = (ListView)FindViewById(Resource.Id.publicLview);
             listPublic.Clear();
-            doStuff();
+            ReadFromFireBase();
             lv.ItemClick += Lv_ItemClick;
         }
-       
+        /// <summary>
+        /// יצירת התפריט והגדרת הופעת אפשרויות בתפריט
+        /// </summary>
+        /// <param name="menu"></param>
+        /// <returns></returns>
         public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
         {
             this.menu = menu;
@@ -50,6 +57,11 @@ namespace SodokuTamir
             }
             return true;
         }
+        /// <summary>
+        /// פונקציה הנקראת כאשר לוחצים על אפשרות בתפריט ופועל בהתאם לאפשרות הנבחרה
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
         {
             base.OnOptionsItemSelected(item);
@@ -75,6 +87,12 @@ namespace SodokuTamir
             return true;
 
         }
+        /// <summary>
+        /// פונקציה הנקראת כאשר נלחץ אובייקט שיא במסך 
+        /// הפונקציה מעבירה לתצוגת הסודוקו הפתור במחלקה אחרת
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Lv_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
             Intent i = new Intent(this, typeof(DisplayRecord));
@@ -83,19 +101,29 @@ namespace SodokuTamir
             i.PutExtra("Type","Global");
             StartActivity(i);
         }
-
-        public async void doStuff()
+        /// <summary>
+        /// פונקציה הקוראת את המידע מהענן וממירה אותו לרשימת משתמשים
+        /// לאחר מכן היא מתאמת בין ההצגה על המסך לרשימת המשתמשים
+        /// </summary>
+        public async void ReadFromFireBase()
         {
-            List<Player> decoy = new List<Player>();
-            decoy = await FirebaseUser.GetAll();
-            for (int i=0;i<decoy.Count();i++)
+            try
             {
-               
-                listPublic.Add(decoy[i]);   
+                List<Player> decoy = new List<Player>();
+                decoy = await FirebaseUser.GetAll();
+                for (int i = 0; i < decoy.Count(); i++)
+                {
+
+                    listPublic.Add(decoy[i]);
+                }
+
+                this.adapter = new PlayerAdapter(this, listPublic, "PublicScores");
+                this.lv.Adapter = adapter;
             }
-           
-            this.adapter = new PlayerAdapter(this, listPublic,"PublicScores");
-            this.lv.Adapter = adapter;
+            catch
+            {
+                Toast.MakeText(this, "No Records Founded", ToastLength.Long).Show();
+            }
         }
     }
 }

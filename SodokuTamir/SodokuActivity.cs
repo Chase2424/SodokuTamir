@@ -28,35 +28,35 @@ namespace SodokuTamir
     [Activity(Label = "Sodoku",  Theme = "@style/AppTheme")]
     public class SodokuActivity : AppCompatActivity
     {
-        public static int reductionTime = 0;
+        /// <summary>
+        /// המחלקה המרכזית של המשחק בו רץ הסודוקו עצמו
+        /// </summary>
+        
         static SodokuActivity _singleTone;
-
-        static ArrayList buttons_to_remove = new ArrayList();
-        Android.Views.IMenu menu;
-        ImageButton Eraser,Pen,Pencil;
+        static ArrayList buttons_to_remove = new ArrayList();//שומרת כפתורים שצריך להסיר לפני שנסגר הפעילות בקוד כדי שלא יהיה כפילויות בשיוך הכפתורים לפעילות
+        Android.Views.IMenu menu;//תפריט
+        ImageButton Eraser,Pen,Pencil;//כפתורי בחירה
         int toolType = 1;//0-eraser,1-pencil,2-pen
-        Intent backgroundMusic;
-        static int lives = 3;
-        //ISharedPreferences sp;
-        static int difficulty;
-        static SudokuCell[,] cells;
-        static DateTime startTime;
-        static TimeSpan duration;
-        public static TimerClass timerclass = new TimerClass();
-        static RelativeLayout L1;
+        static int lives = 3;//כמות החיים הנותרים למשתמש
+       
+        static int difficulty;// קושי הסודוקו
+        static SudokuCell[,] cells;//מערך דו ממדי של תאי סודוקו
+        static DateTime startTime;//תאריך ההתחלה
+        static TimeSpan duration;//הזמן שלקח למשתמש לפתור את הסודוקו
+        public static TimerClass timerclass = new TimerClass();//מחלקת שעון
+        static RelativeLayout L1;//המסך בו נציג את הכפתורים
         static int ButtonHeight = 120, ButtonWidth = 120;
-        static SudokuCell[,] GuessCells;
-        static string SaveClueBoard;
-        static List<int[,]> Solutions;
-        static int result_num = 0;
-        public static LinearLayout.LayoutParams layoutParamsClicked = new LinearLayout.LayoutParams(300, 300);
-        public static LinearLayout.LayoutParams layoutParamsNotClicked = new LinearLayout.LayoutParams(300, 300);
-        ISharedPreferences shared;
-        static bool finishedGenerating = false;
-        public static EditText et;
+        static SudokuCell[,] GuessCells;//הלוח אחרי יצירת ניחושים
+        static string SaveClueBoard;//הלוח אחרי יצירת ה ניחושים בצורת מחרוזת
+        
+        //static int result_num = 0;//משתנה ששומש בתהליך הפיתוח לבדיקת לוחות סודוקו 
+        public static LinearLayout.LayoutParams layoutParamsClicked = new LinearLayout.LayoutParams(300, 300);//עיצוב לתצוגת הכלים בשימוש 
+        public static LinearLayout.LayoutParams layoutParamsNotClicked = new LinearLayout.LayoutParams(300, 300);//עיצוב לתצוגת הכלים שלא בשימוש
+        static bool finishedGenerating = false;// משתנה הקובע האם הלוח סיים ליצור לוח אחד במהלך יצירת הלוח
+        public static EditText et;//מקום להזנת ניחוש השחקן
         private bool mExternalStorageAvailable;
         private bool mExternalStorageWriteable;
-        static bool gameStatus = false;
+        
         String input;
         MyPhoneReceiver PhoneReceiver = new MyPhoneReceiver();
         LinearLayout l1;
@@ -64,9 +64,21 @@ namespace SodokuTamir
         {
             base.OnDestroy();
             timerclass.setStopped();
-            
+            try
+            {
+                UnregisterReceiver(PhoneReceiver);
+            }
+            catch
+            {
+                //הטלפון לא האזין כיוון שלא נכנסה שיחה
+            }
         }
-
+        /// <summary>
+        /// פונקציה זו יוצרת את התפריט בצורה אוטומטית 
+        /// הפונקציה מגדירה איזה פריט בתפריט צריך להראות לפי הSharedPreference
+        /// </summary>
+        /// <param name="menu"></param>
+        /// <returns></returns>
         public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
         {
             this.menu = menu;
@@ -86,13 +98,12 @@ namespace SodokuTamir
             }
             return true;
         }
-        
-        protected override void OnStop()
-        {
-
-            base.OnStop();
-            //UnregisterReceiver(PhoneReceiver);
-        }
+        /// <summary>
+        /// הפונקציה נקראת כאשר לוחצים על פריט בתפריט
+        /// הפונקציה פועלת לפי איזה פריט שנלחץ 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
         {
             base.OnOptionsItemSelected(item);
@@ -125,14 +136,6 @@ namespace SodokuTamir
             SetContentView(Resource.Layout.SodokuLayout);           
             // Create your application here
             finishedGenerating = false;
-            /*
-           if(gameStatus)
-            {
-
-                L1.RemoveAllViews();
-                gameStatus = false;
-            }*/
-            
             lives = 3;
            ThreadStart ts = new ThreadStart(timerclass.Run);
             Thread thread = new Thread(ts);
@@ -166,7 +169,7 @@ namespace SodokuTamir
                 }
             }
             //Console.WriteLine("Hello World!");
-            Solutions = new List<int[,]>();
+            
             int[,] board = new int[9, 9];
             //מקרה 1
             //int[] allow_to_use1 = new int[9] {1,2,3,4,5,6,7,8,9 };
@@ -227,6 +230,10 @@ namespace SodokuTamir
             }
             return Str;
         }
+        /// <summary>
+        /// פעולה הנקראת כאשר השחקן פתר את הסודוקו ורוצה לשמור את השיא באופן מקומי
+        /// הפונקציה שומרת את הפרטים של המשתמש בקובץ טקסט בתיקיית סודוקו
+        /// </summary>
         public void SaveBoard()
         {
             
@@ -252,14 +259,15 @@ namespace SodokuTamir
 
 
         }
-        /*
-        public void onBackPressed()
-        {
-            Toast.MakeText(this, " Press Back again to Exit ", ToastLength.Short).Show();
-            return;
-        }*/
+        /// <summary>
+        /// פעולה הנגרמת מלחיצה על כפתור של משבצת סודוקו
+        /// קישרתי כל כפתור לפונקציה הזאת
+        /// הפונקציה בודקת את מה שהמשתמש מנחש מול הלוח המקורי בלי המקומות הריקים
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
             private void SodokuActivity_Click(object sender, EventArgs e)
-        {
+            {
             Button button = sender as Button;
             int btnTag = (int)button.Tag;
             //התיוג של הכפתור משמש לדעת האם המשבצת נרשמה על ידי המשתמש או על ידינו
@@ -333,7 +341,11 @@ namespace SodokuTamir
                 }
             }
         }
-
+        /// <summary>
+        /// פונקציה השומרת לענן את פרטי המשתמש ומסיימת את ריצת המחלקה
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void Publicly_Click(object sender, EventArgs e)
         {
             //doFireWallStuff
@@ -342,20 +354,23 @@ namespace SodokuTamir
             await FirebaseUser.AddScore(p);
             Finish();
         }
-
+        /// <summary>
+        /// פונקציה השומרת מקומית את פרטי המשתמש ומסיימת את ריצת המחלקה
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Privately_Click(object sender, EventArgs e)
         {
             SaveBoard();
             Finish();
         }
 
-        public void NumberEntry()
-        {
-            var editor = shared.Edit();
-            editor.PutString("Board", BoardToString(GuessCells));
-            editor.Commit();
-        }
-
+        
+        /// <summary>
+        /// ניקוי הלייאאוט מהכפתורים
+        /// יצרתי את הפעולה הזאת מכיוון שלפעמים הלייאואט זכר כפתורים מריצות קודמות של הקוד
+        /// פעולה זו פותרת את הבעיה מכיוון שהיא מסירה את רשימת הכפתורים מהלייאאוט
+        /// </summary>
         public static void clear_old_board()
         {
            foreach(Button _b in buttons_to_remove)
@@ -364,7 +379,12 @@ namespace SodokuTamir
             }
             buttons_to_remove.Clear();
         }
-
+        /// <summary>
+        /// הפונקציה מקבלת סודוקו שלם ובהתאם לרמת הקושי מחסירה מקומות בסודוקו
+        /// הפעולה מחזירה סודוקו עם חורים
+        /// </summary>
+        /// <param name="Original"></param>
+        /// <returns></returns>
         public SudokuCell[,] CreateClues(SudokuCell[,] Original)
         {
             Random rnd = new Random();
@@ -387,12 +407,7 @@ namespace SodokuTamir
                         board[number] = '0';
                     }
 
-                }/*
-                while (board.Count(f => (f == 0)) < 20)
-                {
-                    int number = rnd.Next(0, 81);
-                    board[number] = '0';
-                }*/
+                }
             }
             else if (difficulty == 2)
             {
@@ -406,12 +421,7 @@ namespace SodokuTamir
                         board[number] = '0';
                     }
 
-                }/*
-                while (board.Count(f => (f == 0)) < 30)
-                {
-                    int number = rnd.Next(0, 81);
-                    board[number] = '0';
-                }*/
+                }
             }
             else if (difficulty == 3)
             {
@@ -425,12 +435,7 @@ namespace SodokuTamir
                         board[number] = '0';
                     }
 
-                }/*
-                while (board.Count(f => (f == 0)) < 40)
-                {
-                    int number = rnd.Next(0, 81);
-                    board[number] = '0';
-                }*/
+                }
             }
             else
             {
@@ -444,18 +449,12 @@ namespace SodokuTamir
             arr2 = StringToBoard(strBoard);
             SaveClueBoard = strBoard;
             return arr2;
-            /*
-            for (int i = 0; i < 9; i++)
-            {
-                for (int j = 0; j < 9; j++)
-                {
-                    Current[i, j].setValue(arr2[i, j].getValue());
-                }
-            }
-
-            return Current;
-            */
         }
+        /// <summary>
+        /// הופך מערך דו ממדי של משבצות סודוקו למערך דו ממדי של מספרים שלמים
+        /// </summary>
+        /// <param name="suduko"></param>
+        /// <returns></returns>
         public int[,] getBoard(SudokuCell[,] suduko)
         {
             int[,] arr = new int[9, 9];
@@ -468,7 +467,12 @@ namespace SodokuTamir
             }
 
             return arr;
-        }//הופך את המערך של מחלקה למערך של מספרים שלמים
+        }
+        /// <summary>
+        /// הופך מחרוזת למערך דו ממדי של משבצות סודוקו
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public SudokuCell[,] StringToBoard(string str)
         {
 
@@ -484,12 +488,16 @@ namespace SodokuTamir
             }
             return arr;
         }
+        /// <summary>
+        /// פונקציה המראה למשתמש את הלוח
+        /// הפונקציה יוצרת דינמטית את הכפתורים על הלוח ואת הפסי הפרדה
+        /// </summary>
         public static void ShowBoard()
         {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(GuessCells[0, 0].getWidth(), GuessCells[0, 0].getLength());
             L1.RemoveAllViews();
             clear_old_board();
-            gameStatus = true;
+            
             for (int i = 0; i < 9; i++)
             {
 
@@ -534,20 +542,32 @@ namespace SodokuTamir
                 }
             }
         }
+        /// <summary>
+        /// פונקציה המקבלת מספר ומחזירה מספר רנדומלי בין 0 למספר
+        /// </summary>
+        /// <param name="end"></param>
+        /// <returns></returns>
         public static int RandomNumber(int end)
         {
             Random rnd = new Random();
             int number = rnd.Next(0, end);
             return number;
         }
-
+        /// <summary>
+        /// פעולה זו היא פעולה רקורסיבית אשר יוצרת את לוח הסודוקו
+        /// </summary>
+        /// <param name="arr1">הפונקציה מקבלת מערך דו ממדי של מספרים שלמים שהם בעצם הלוח סודוקו</param>
+        /// <param name="x">הפונקציה מקבלת מספר שלם המציג את המיקום של המשבצת הנוכחית במערך הדו ממדי של המספרים השלמים</param>
+        /// <param name="y">הפונקציה מקבלת מספר שלם המציג את המיקום של המשבצת הנוכחית במערך הדו ממדי של המספרים השלמים</param>
+        /// <param name="allow_to_use1"> הפונקציה מקבלת מערך חד ממדי של איזה מספרים ניתן להשתמש באותה שורה דבר זה נוצר בכדי לייעל את הקוד</param>
+        /// <returns></returns>
         public static bool generate_array(int[,] arr1, int x, int y, int[] allow_to_use1)
         {
 
-            //הפונקציה לא עבדה כאשר עבדנו על אוותו מערך בלי לשכפל אותו
+            //הפונקציה לא עבדה כאשר עבדתי על אותו מערך בלי לשכפל אותו
             int[,] arr = arr1.Clone() as int[,];
 
-            // אם לא תשמש ב סינון של מה שכבר השתמשת, יקח פי עמה זמן לפונקציה 
+            // אם לא תשמש בסינון של מה שכבר השתמשתי, יקח פי כמה זמן לפונקציה 
             int[] allow_to_use = allow_to_use1.Clone() as int[];
             //שהמספר יבחר מהמערך באופן רנדומלי
             int rndNum;
@@ -574,25 +594,8 @@ namespace SodokuTamir
                     //Remove number from Arr
                     allow_to_use = allow_to_use.Where(val => val != current_number).ToArray();
                     continue;
-                }
-                /*
-                for (int y1 = 0; y1 < y; y1++)
-                {
-                    if (arr[x, y1] == current_number)
-                    {
-                        next = true;
-                        break;
-                    }
-                }
-
-                if (next)
-                {
-                    
-                    continue;
-                }*/
-
-
-                // אם הגענו לפה, המספר בסדר
+                }              
+                // אם הגענו לפה, המספר בסדר בשורה
                 arr[x, y] = current_number;
 
                 if (checkBoard(arr))
@@ -603,7 +606,7 @@ namespace SodokuTamir
                         if (y == 8)
                         {
                             //הגענו לסוף הלוח, הצלחה אמיתית GREAT SUCCESS
-                            print_arr(arr, x, y);
+                            //print_arr(arr, x, y);הדפסת לוח לבדיקת תקינות בתהליך הפיתוח
                             _singleTone.BoardReady(arr);
                             finishedGenerating = true;
                             return true;
@@ -611,7 +614,7 @@ namespace SodokuTamir
                         }
                         x = 0;
                         y++;
-                        // אם שורה חדשה, תן לו אפוציה לכל המספרים
+                        // אם שורה חדשה, תן לו אופציה לכל המספרים
                         allow_to_use = new int[9] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
                     }
                     else
@@ -627,7 +630,13 @@ namespace SodokuTamir
 
             return true;
         }
-
+        /// <summary>
+        /// הפועלה נקראת בסוף יצירת הלוח 
+        /// יוצרת רמזים בלוח 
+        /// משייכת את הכפתורים לפונקציית לחיצה אחת
+        /// ומראה את הכפתורים למשתמש
+        /// </summary>
+        /// <param name="board"></param>
         public void BoardReady(int[,] board)
         {
             for (int k = 0; k < 9; k++)
@@ -656,6 +665,11 @@ namespace SodokuTamir
 
             //_singleTone.on_board_ready(arr);
         }
+        /// <summary>
+        /// פונקצית האם לוח תקין
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
         public static bool checkBoard(int[,] arr)
         {
             // הסתמש במיון דליים בכדי לספור מופעים של כל ספרה בכל ציר
@@ -679,7 +693,7 @@ namespace SodokuTamir
             }
 
 
-            //check all y
+            //לבדוק כל y
             for (int x = 0; x < 9; x++)
 
             {
@@ -697,7 +711,7 @@ namespace SodokuTamir
             }
 
 
-            //Check sub-array
+            //לבדוק איזורים המחולקים ל3 על 3
 
             if (
                // היה קושי לחלק את המערך לבדיקות לפי אזורים בלי לכתוב פונקציית עזר
@@ -719,7 +733,13 @@ namespace SodokuTamir
                 return false;
         }
 
-
+        /// <summary>
+        /// פונקציה הבודקת קיבוצים של 3 על 3 של משבצות סודוקו
+        /// </summary>
+        /// <param name="arr">כל המערך</param>
+        /// <param name="start_pos_x">ההתחלה של האיזור הנבדק</param>
+        /// <param name="start_pos_y">ההתחלה של האיזור הנבדק</param>
+        /// <returns></returns>
         public static bool check_sub_arr(int[,] arr, int start_pos_x, int start_pos_y)
         {
 
@@ -747,6 +767,7 @@ namespace SodokuTamir
         }
 
         // הדפס את הלוח 
+        /* פונקציה אשר השתמשתי לבדיקת תקינות הסודוקו בתהליך פיתוח האפליקציה
         public static void print_arr(int[,] arr, int pos_x, int pos_y)
         {
             int[,] arr1 = arr.Clone() as int[,];
@@ -757,16 +778,18 @@ namespace SodokuTamir
             {
                 for (int x = 0; x < 9; x++)
                 {
-                    //Console.Write(arr1[x, y] + " ");
+                    System.Console.Write(arr1[x, y] + " ");
                 }
                 System.Console.WriteLine("\n");
             }
-        }
+        }*/
 
 
 
 
-
+        /// <summary>
+        /// פונקציה המגדירה רשות לכתוב ולקרוא לקבצים חיצוניים
+        /// </summary>
         public void setPermissions()
         {
             string state = Android.OS.Environment.ExternalStorageState;

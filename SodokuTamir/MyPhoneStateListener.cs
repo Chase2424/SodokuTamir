@@ -14,14 +14,22 @@ namespace SodokuTamir
 {
     public class MyPhoneStateListener: PhoneStateListener
     {
-
+        /// <summary>
+        /// מחלקה העוסקת בשינוי של מצב תקשורת טלפונית.
+        /// </summary>
 
         Context context;
-        public static int countcheck;
+        //public static int countcheck;
         public MyPhoneStateListener(Context context)
         {
             this.context = context;
         }
+        /// <summary>
+        /// הפונקציה מקבלת מצב שיחה ואת טלפון המספר הנכנס 
+        /// מפעיל הוראות בהתאם לסוג שינוי תקשורת אשר הגיע לפונקציה
+        /// </summary>
+        /// <param name="CS"></param>
+        /// <param name="incomingNumber"></param>
         public override void OnCallStateChanged(CallState CS, string incomingNumber)
         {
             base.OnCallStateChanged(CS, incomingNumber);

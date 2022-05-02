@@ -17,6 +17,9 @@ namespace SodokuTamir
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : AppCompatActivity 
     {       
+        /// <summary>
+        /// המחלקה הראשית המגשרת בין כל אבני הפרויקט 
+        /// </summary>
         public static ISharedPreferences SP;     
         Button btnStart, btnRecord;// כפתור להתחלת המשחק וכפתור ללראות שיאים
         RadioButton Easy, Medium, Hard;// כפתורי רדיו לבחירת רמת הקושי
@@ -92,7 +95,11 @@ namespace SodokuTamir
             UnregisterReceiver(broadCastBattery);// קוטע את התיאום בין המאזין לסוללה למערכת
         }
         
-
+        /// <summary>
+        /// יצירת התפריט והגדרת הופעת אפשרויות בתפריט
+        /// </summary>
+        /// <param name="menu"></param>
+        /// <returns></returns>
         public override bool OnCreateOptionsMenu(Android.Views.IMenu menu)
         {
             this.menu = menu;
@@ -112,6 +119,10 @@ namespace SodokuTamir
             }
             return true;
         }
+
+        /// <summary>
+        /// בחירת קובץ מוזיקה מהמערכת
+        /// </summary>
         public async void PickFile()
         {
             try
@@ -144,6 +155,11 @@ namespace SodokuTamir
 
             
         }
+        /// <summary>
+        /// פונקציה הנקראת כאשר לוחצים על אפשרות בתפריט ופועל בהתאם לאפשרות הנבחרה
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public override bool OnOptionsItemSelected(Android.Views.IMenuItem item)
         {
             base.OnOptionsItemSelected(item);
@@ -171,34 +187,16 @@ namespace SodokuTamir
                 this.menu.GetItem(0).SetVisible(true);
                 this.menu.GetItem(1).SetVisible(false);
             }
-
-            /*
-            if (item.ItemId == Resource.Id.action_startMusic)
-            {
-                if (MainActivity.menu.GetItem(0).IsVisible)
-                {
-
-                    MainActivity.menu.GetItem(0).SetVisible(false);
-                    MainActivity.menu.GetItem(1).SetVisible(true);
-                    StartService(MainActivity.backgroundMusic);
-                }
-            }
-            else if (item.ItemId == Resource.Id.action_stopMusic)
-            {
-                if (MainActivity.menu.GetItem(1).IsVisible)
-                {
-                    MainActivity.menu.GetItem(1).SetVisible(false);
-                    MainActivity.menu.GetItem(0).SetVisible(true);
-                    StopService(MainActivity.backgroundMusic);
-                }
-            }*/
             return true;
         
          }
+        /// <summary>
+        /// לחיצה על כפתור הראה שיאים אשר פותח דיאלוג השואל איזה שיא להראות
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnRecord_Click(object sender, System.EventArgs e)
         {
-
-
             Dialog d = new Dialog(this);
             d.SetContentView(Resource.Layout.OutsideInside);
             Button privately = (Button)d.FindViewById(Resource.Id.privateresult);
@@ -209,21 +207,33 @@ namespace SodokuTamir
             globally.Click += Globally_Click;
            
         }
-
+        /// <summary>
+        /// לחיצה על אופצית לראות שיאים גלובליים לפי הדיאלוג שנפתח כתוצאה מכפתור להראות שיא
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Globally_Click(object sender, EventArgs e)
         {
             Intent intent = new Intent(this, typeof(PublicScores));
 
             StartActivity(intent);
         }
-
+        /// <summary>
+        /// לחיצה על אופצית לראות שיאים מקומיים לפי הדיאלוג שנפתח כתוצאה מכפתור להראות שיא
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Privately_Click(object sender, EventArgs e)
         {
             Intent intent = new Intent(this, typeof(RecordActivity));
 
             StartActivity(intent);
         }
-
+        /// <summary>
+        /// כפתור התחלת משחק
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnStart_Click(object sender, System.EventArgs e)
         {
 

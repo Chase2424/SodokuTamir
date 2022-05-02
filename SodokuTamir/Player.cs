@@ -13,18 +13,29 @@ namespace SodokuTamir
 {
     public class Player
     {
-        public string Name;//Name of the player
-        public string Time;//The time it took for the player to solve the sudoku
-        public string Date;//The Date the game took place in
-        public SudokuCell[,] SodokuBoard;//The PlayersSodoku
+        /// <summary>
+        /// מחלקת משתמש
+        /// </summary>
+        public string Name;//שם השחקן
+        public string Time;//הזמן שלקח לשחקן לפתור את הסודוקו
+        public string Date;//תאריך המשחק
+        public SudokuCell[,] SodokuBoard;//הסודוקו אשר פתר
         
-        public string StrBoard="";//Board as string, I use it in the public players
+        public string StrBoard= "";//הסודוקו אשר פתר בצורת מחרוזת
 
 
+        //יש לי שני סוגים של פעולה בונה  
         public Player()
         {
 
         }
+        /// <summary>
+        ///  פעולה בונה של משתמש גלובלי כך כשקוראים את המידע מהפיירבייס או מכניסים אותו אפשר להכניס את הלוח בתור מחרוזת
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <param name="Time"></param>
+        /// <param name="Date"></param>
+        /// <param name="board"></param>
         public Player(string Name, string Time, string Date, string board)
         {
             this.Name = Name;
@@ -35,6 +46,13 @@ namespace SodokuTamir
 
 
         }
+        /// <summary>
+        /// פעולה בונה של משתמש אשר אפשר להכניס לוח סודוקו 
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <param name="Time"></param>
+        /// <param name="Date"></param>
+        /// <param name="SodokuBoard"></param>
         public Player(string Name, string Time, string Date, SudokuCell[,] SodokuBoard)
         {
             this.Name = Name;

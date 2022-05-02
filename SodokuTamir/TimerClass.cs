@@ -14,9 +14,9 @@ namespace SodokuTamir
 {
     public class TimerClass
     {
-        bool InACall = false;
-        public int timeCounter = 0;
-        bool timernotstopped = true;
+        bool InACall = false;//האם המשתמש בשיחה טלפונית
+        public int timeCounter = 0;//סופר זמן
+        bool timernotstopped = true;//לא צריך לעצור את ספירת הזמן
         public TimerClass()
         {
 

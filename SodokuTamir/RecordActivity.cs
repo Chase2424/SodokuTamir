@@ -17,15 +17,18 @@ namespace SodokuTamir
     [Activity(Label = "RecordActivity")]
     public class RecordActivity : AppCompatActivity
     {
+        /// <summary>
+        /// מחלקה המראה שיאים פרטיים
+        /// </summary>
         ListView lv;
         PlayerAdapter adapter; //מתאם את רשימת השחקנים לListView       
         private bool mExternalStorageAvailable;
         private bool mExternalStorageWriteable;
-        public static List<Player> list = new List<Player>();
-        Android.Views.IMenu menu;
+        public static List<Player> list = new List<Player>();//רשימת שחקנים
+        Android.Views.IMenu menu;//תפריט
         public static string root = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDocuments).ToString();
-        public static string game_folder = Path.Combine(root, "saved_sodokus");
-        public static string record_file = Path.Combine(game_folder, "records.txt");
+        public static string game_folder = Path.Combine(root, "saved_sodokus");//נתיב תיקיית הסודוקו
+        public static string record_file = Path.Combine(game_folder, "records.txt");//נתיב קובץ הטקסט בו רשום קוד השיאים המקומי
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -34,10 +37,6 @@ namespace SodokuTamir
             // Create your application here
             setPermissitios();
             this.lv = (ListView)FindViewById(Resource.Id.Lview);
-
-            //MainActivity.list.Add(new Player("Guy1", 200, "4th july 2020"));
-            //MainActivity.list.Add(new Player("Guy2", 20020, "4th july 2020"));
-            //MainActivity.list.Add(new Player("Girl", 100, "4th july 2020"));
             list.Clear();
             if(System.IO.File.Exists(record_file))
                 ReadRecordFiles();
@@ -142,7 +141,7 @@ namespace SodokuTamir
             this.lv.Adapter = adapter;
         }
         /// <summary>
-        /// מחלקה הממירה לוח דו ממדי של משבצות סודוקו למחרוזת
+        /// מחלקה הממירה מחרוזת אל לוח דו ממדי של תאי סודוקו
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
